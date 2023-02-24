@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- HTTP -->
+    <bool name="httpProtocol">false</bool>
+    <string name="httpHost" translatable="false">0.0.0.0</string>
+    <string name="httpPort" translatable="false">8080</string>
+
+    <!-- WEBSOCKET -->
+    <bool name="websocketProtocol">false</bool>
+    <string name="websocketHost" translatable="false">0.0.0.0</string>
+    <string name="websocketPort" translatable="false">8081</string>
+
+    <!-- COAP -->
+    <bool name="coapProtocol">true</bool>
+    <string name="coapHost" translatable="false">0.0.0.0</string>
+    <string name="coapPort" translatable="false">5683</string>
+
+    <!-- MQTT -->
+    <bool name="mqttProtocol">true</bool>
+    <string name="mqttBroker" translatable="false">tcp://vz5nc4zqbrgzpn13.myfritz.net</string>
+    <string name="mqttPort" translatable="false">1883</string>
+    <string name="mqttUsername" translatable="false" />
+    <string name="mqttPassword" translatable="false" />
+    <string name="mqttClientId" translatable="false" />
+    <string name="mqttAllTDTopic" translatable="false">SearchAllThingDescription</string>
+</resources>

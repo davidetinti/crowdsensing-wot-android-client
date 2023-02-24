@@ -1,0 +1,154 @@
+<resources>
+    <!-- Splashscreen theme. -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Set the splash screen background, animated icon, and animation duration. -->
+        <item name="windowSplashScreenBackground">#C1E8FC</item>
+
+        <!-- Use windowSplashScreenAnimatedIcon to add either a drawable or an
+             animated drawable. One of these is required. -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/launcher_foreground</item>
+        <!-- Required for animated icons -->
+        <item name="windowSplashScreenAnimationDuration">200</item>
+
+        <!-- Set the theme of the Activity that directly follows your splash screen. -->
+        <!-- Required -->
+        <item name="postSplashScreenTheme">@style/Theme.App</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="Theme.App" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="android:statusBarColor">#FAFCFF</item>
+        <item name="android:navigationBarColor">#FAFCFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+    </style>
+
+    <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
+        <item name="titleTextAppearance">@style/TextAppearance.App.TitleLarge</item>
+        <item name="subtitleTextAppearance">@style/TextAppearance.App.TitleMedium</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Toolbar" parent="">
+        <item name="android:background">#FAFCFF</item>
+    </style>
+
+    <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="elevation">0dp</item>
+        <item name="backgroundTint">#FAFCFF</item>
+        <item name="itemIconTint">#001F29</item>
+        <item name="itemActiveIndicatorStyle">
+            @style/Widget.App.BottomNavigationView.ActiveIndicator
+        </item>
+    </style>
+
+    <style name="Widget.App.BottomNavigationView.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#C1E8FC</item>
+    </style>
+
+    <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="TextAppearance.App.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="TextAppearance.App.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="TextAppearance.App.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="TextAppearance.App.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="TextAppearance.App.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="TextAppearance.App.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="AuthCard">
+        <item name="android:background">@drawable/rounded_card_20dp</item>
+        <item name="android:backgroundTint">#DFF4FF</item>
+        <item name="android:paddingHorizontal">24dp</item>
+        <item name="android:paddingVertical">24dp</item>
+    </style>
+
+    <style name="AuthText">
+        <item name="android:textColor">#001F29</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="AuthInputCheckbox" parent="AuthText">
+        <item name="buttonTint">#001F29</item>
+        <item name="buttonIconTint">#DFF4FF</item>
+    </style>
+
+    <style name="AuthInputText" parent="AuthText">
+        <item name="passwordToggleTint">#8A938D</item>
+        <item name="android:textColorHint">#8A938D</item>
+    </style>
+
+    <style name="AuthButton" parent="Widget.Material3.Button.ElevatedButton">
+        <item name="android:backgroundTint">#C1E8FC</item>
+        <item name="android:textColor">#001F29</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="MainBackground">
+        <item name="android:background">#FAFCFF</item>
+    </style>
+
+    <style name="CampaignCardStyle">
+        <item name="android:background">@drawable/rounded_card_20dp</item>
+        <item name="android:backgroundTint">#DFF4FF</item>
+    </style>
+
+    <style name="IconStyle">
+        <item name="android:tint">#577C8D</item>
+    </style>
+
+    <style name="BadgeStyle">
+        <item name="strokeColor">@android:color/transparent</item>
+        <item name="cardBackgroundColor">#577C8D</item>
+        <item name="cardCornerRadius">100dp</item>
+    </style>
+
+    <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">#FAFCFF</item>
+    </style>
+</resources>

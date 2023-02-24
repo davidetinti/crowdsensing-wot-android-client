@@ -1,0 +1,20 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:key="campaignMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:summary="@string/manualSubmissionTitle"
+        app:title="Modalità di invio dati" />
+    <Preference
+        app:key="seeOldSubmissions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:summary="Visualizza i dati inviati"
+        app:title="Invii recenti" />
+    <Preference
+        app:key="abandonCampaign"
+        app:title="Abbandona la campagna" />
+
+</PreferenceScreen>

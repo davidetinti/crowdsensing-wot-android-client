@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/authBackgroundDescription"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/bubble_background"
+        tools:ignore="ImageContrastCheck" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="50dp"
+        android:paddingVertical="20dp">
+
+
+        <LinearLayout
+            style="@style/AuthCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:divider="@drawable/empty_divider_10dp_vertical"
+            android:orientation="vertical"
+            android:showDividers="middle">
+
+            <TextView
+                android:id="@+id/authTitle"
+                style="@style/AuthText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/authTitleLogin"
+                android:textAlignment="center"
+                android:textSize="28sp"
+                app:lineHeight="36sp" />
+
+            <TextView
+                android:id="@+id/authSubtitle"
+                style="@style/AuthText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/authSubtitleLogin"
+                android:textAlignment="center"
+                app:lineHeight="20sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/authEmailLayout"
+                style="@style/AuthInputText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/authEmailPlaceholder"
+                app:errorEnabled="false"
+                app:passwordToggleEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/authEmailTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/authPasswordLayout"
+                style="@style/AuthInputText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/authPasswordPlaceholder"
+                app:errorEnabled="false"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/authPasswordTextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:singleLine="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <CheckBox
+                android:id="@+id/authRememberMe"
+                style="@style/AuthInputCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/authRememberLoginText" />
+
+            <Button
+                android:id="@+id/authPrimaryActionBtn"
+                style="@style/AuthButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/loginButtonText" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/authSecondaryText"
+                    style="@style/AuthText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/roboto"
+                    android:text="@string/authSecondaryTextLogin"
+                    android:textAlignment="viewStart"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/authSecondaryActionBtn"
+                    style="@style/AuthButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/registerButtonText" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

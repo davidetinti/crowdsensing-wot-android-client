@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/CampaignCardStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:divider="@drawable/empty_divider_16dp_horizontal"
+        android:orientation="horizontal"
+        android:showDividers="middle">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/campaignTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/campaignTitleDefault"
+                android:textAppearance="@style/TextAppearance.App.TitleMedium" />
+
+            <TextView
+                android:id="@+id/campaignOrganization"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/campaignOrganizationDefault"
+                android:textAppearance="@style/TextAppearance.App.TitleSmall" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/empty_divider_12dp_horizontal"
+            android:orientation="horizontal"
+            android:showDividers="middle"
+            android:visibility="gone">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/badgeDollar"
+                android:layout_width="35dp"
+                android:layout_height="19dp"
+                app:cardBackgroundColor="#100046"
+                app:cardCornerRadius="100dp"
+                app:strokeColor="@android:color/transparent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:contentDescription="@string/defaultIconContentDescription"
+                        app:srcCompat="@drawable/ic_dollar"
+                        app:tint="#FFFFFF" />
+                </RelativeLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/badgePromo"
+                android:layout_width="35dp"
+                android:layout_height="19dp"
+                app:cardBackgroundColor="#100046"
+                app:cardCornerRadius="100dp"
+                app:strokeColor="@android:color/transparent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:contentDescription="@string/defaultIconContentDescription"
+                        app:srcCompat="@drawable/ic_percentage"
+                        app:tint="#FFFFFF" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/badgeGpsOn"
+                android:layout_width="35dp"
+                android:layout_height="19dp"
+                app:cardBackgroundColor="#BA1A1A"
+                app:cardCornerRadius="100dp"
+                app:strokeColor="@android:color/transparent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:contentDescription="@string/defaultIconContentDescription"
+                        app:srcCompat="@drawable/ic_gps_on"
+                        app:tint="#FFFFFF" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/badgeGpsOff"
+                android:layout_width="35dp"
+                android:layout_height="19dp"
+                app:cardBackgroundColor="#404944"
+                app:cardCornerRadius="100dp"
+                app:strokeColor="@android:color/transparent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:contentDescription="@string/defaultIconContentDescription"
+                        app:srcCompat="@drawable/ic_gps_off"
+                        app:tint="#FFFFFF" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="start|fill_horizontal"
+        android:orientation="horizontal"
+        android:paddingTop="10dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:divider="@drawable/empty_divider_10dp_horizontal"
+            android:orientation="horizontal"
+            android:showDividers="middle">
+
+            <RelativeLayout
+                android:id="@+id/sensorCamera"
+                android:layout_width="24dp"
+                android:layout_height="24dp">
+
+                <ImageView
+                    style="@style/IconStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:contentDescription="@string/defaultIconContentDescription"
+                    app:srcCompat="@drawable/ic_camera" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/sensorUnknown"
+                android:layout_width="24dp"
+                android:layout_height="24dp">
+
+                <ImageView
+                    style="@style/IconStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:contentDescription="@string/defaultIconContentDescription"
+                    app:srcCompat="@drawable/ic_unknown" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/sensorSatellite"
+                android:layout_width="24dp"
+                android:layout_height="24dp">
+
+                <ImageView
+                    style="@style/IconStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:contentDescription="@string/defaultIconContentDescription"
+                    app:srcCompat="@drawable/ic_satellite" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/sensorMic"
+                android:layout_width="24dp"
+                android:layout_height="24dp">
+
+                <ImageView
+                    style="@style/IconStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:contentDescription="@string/defaultIconContentDescription"
+                    app:srcCompat="@drawable/ic_mic" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/sensorPosition"
+                android:layout_width="24dp"
+                android:layout_height="24dp">
+
+                <ImageView
+                    style="@style/IconStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:contentDescription="@string/defaultIconContentDescription"
+                    app:srcCompat="@drawable/ic_place" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/BadgeStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/points"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="3dp"
+                    android:text="@string/defaultPointsString"
+                    android:textAppearance="@style/TextAppearance.App.TitleSmall" />
+
+
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

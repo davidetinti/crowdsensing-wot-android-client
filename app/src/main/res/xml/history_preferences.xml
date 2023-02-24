@@ -1,0 +1,8 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:key="campaign_history_1"
+        app:summary="Comune di Bologna"
+        app:title="Raccolta dati per il Comune di Bologna" />
+
+</PreferenceScreen>

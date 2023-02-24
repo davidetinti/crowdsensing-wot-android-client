@@ -1,0 +1,83 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+}
+
+android {
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.example.crowdsensingwotandroidapp"
+        minSdk 26
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // Default
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // Needed for navigation stuffs (enables view binding feature)
+    buildFeatures {
+        viewBinding true
+    }
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/legal/LICENSE', 'META-INF/legal/NOTICE.md', 'META-INF/legal/3rd-party/cc0-legalcode.html', 'META-INF/legal/3rd-party/BSD-3-Clause-LICENSE.txt', 'META-INF/legal/3rd-party/APACHE-LICENSE-2.0.txt', 'META-INF/legal/3rd-party/MIT-license.html', 'META-INF/legal/3rd-party/CDDL+GPL-1.1.txt']
+        }
+    }
+
+    namespace 'com.example.crowdsensingwotandroidapp'
+}
+
+dependencies {
+    // Experimental
+
+    // Default
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // Splashscreen API
+    implementation 'androidx.core:core-splashscreen:1.0.0'
+
+    // Library
+    implementation project(path: ':wot-servient')
+
+    // Needed tu use Config class
+    implementation 'com.typesafe:config:1.4.1'
+
+    // Needed for navigation stuffs
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.navigation:navigation-fragment:2.5.3'
+    implementation 'androidx.navigation:navigation-ui:2.5.3'
+    implementation 'androidx.preference:preference:1.2.0'
+
+    // Location services
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'androidx.annotation:annotation:1.5.0'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.gms:google-services:4.3.15'
+    implementation 'com.google.maps.android:android-maps-utils:0.4.4'
+
+    // Needed for object parser
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
+
+    // Testing
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}

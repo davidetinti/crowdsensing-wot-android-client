@@ -1,0 +1,24 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        app:iconSpaceReserved="false"
+        app:key="profileEmail"
+        app:selectable="false"
+        app:summary="dati981026@gmail.com"
+        app:title="@string/email" />
+    <Preference
+        app:iconSpaceReserved="false"
+        app:key="profileSettings"
+        app:title="@string/settings" />
+    <Preference
+        app:iconSpaceReserved="false"
+        app:key="profileCampaignHistory"
+        app:title="@string/campaign_history" />
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:iconSpaceReserved="false"
+        app:key="profileLogout"
+        app:title="@string/logout" />
+
+</PreferenceScreen>

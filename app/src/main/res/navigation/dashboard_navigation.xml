@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashboardNavigation"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/campaignDetailsFragment"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.allCampaigns.CampaignDetailsFragment"
+        tools:layout="@layout/fragment_campaign_details">
+        <action
+            android:id="@+id/action_campaignDetailsFragment_to_campaignsFragment"
+            app:destination="@id/campaignsFragment"
+            app:popUpTo="@id/campaignsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_campaignDetailsFragment_to_campaignApplyDialog"
+            app:destination="@id/campaignApplyDialog"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/campaignsFragment"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.allCampaigns.CampaignsFragment"
+        android:label="@string/campaignNavSectionTitle"
+        tools:layout="@layout/fragment_campaigns">
+        <action
+            android:id="@+id/action_campaignsFragment_to_campaignDetailsFragment"
+            app:destination="@id/campaignDetailsFragment" />
+        <action
+            android:id="@+id/action_campaignsFragment_to_campaignApplySuccessDialog"
+            app:destination="@id/campaignApplySuccessDialog" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.profile.ProfileFragment"
+        android:label="@string/profileNavSectionTitle"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_settingsPreferenceFragment"
+            app:destination="@id/settingsPreferenceFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_historyPreferenceFragment"
+            app:destination="@id/historyPreferenceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns.HomeFragment"
+        android:label="@string/joinedCampaignsNavSectionTitle"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_homeDetailsFragment"
+            app:destination="@id/homeDetailsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_campaignCompletedDialog"
+            app:destination="@id/campaignCompletedDialog" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeDetailsFragment"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns.HomeDetailsFragment"
+        tools:layout="@layout/fragment_campaign_details">
+        <action
+            android:id="@+id/action_homeDetailsFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homeDetailsFragment_to_homeDetailsSettings"
+            app:destination="@id/homeDetailsSettings" />
+        <action
+            android:id="@+id/action_homeDetailsFragment_to_campaignManualSendDialog"
+            app:destination="@id/campaignManualSendDialog" />
+        <action
+            android:id="@+id/action_homeDetailsFragment_to_campaignManualSendSuccessDialog"
+            app:destination="@id/campaignManualSendSuccessDialog" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeDetailsSettings"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns.HomeDetailsSettings"
+        android:label="HomeDetailsSettings" >
+        <action
+            android:id="@+id/action_homeDetailsSettings_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <dialog
+        android:id="@+id/campaignApplyDialog"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.allCampaigns.JoinCampaignDialog"
+        android:label="CampaignApplyDialog"
+        tools:layout="@layout/dialog_join_campaign">
+        <action
+            android:id="@+id/action_campaignApplyDialog_to_campaignDetailsFragment"
+            app:destination="@id/campaignDetailsFragment"
+            app:popUpTo="@id/campaignDetailsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_campaignApplyDialog_to_campaignApplyReviewDialog"
+            app:destination="@id/campaignApplyReviewDialog"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/campaignDetailsFragment" />
+        <action
+            android:id="@+id/action_campaignApplyDialog_to_campaignApplyIntervalDialog"
+            app:destination="@id/campaignApplyIntervalDialog"
+            app:popUpTo="@id/campaignDetailsFragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/campaignApplyReviewDialog"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.allCampaigns.JoinCampaignReviewDialog"
+        android:label="CampaignApplyReviewDialog"
+        tools:layout="@layout/dialog_join_campaign_review">
+        <action
+            android:id="@+id/action_campaignApplyReviewDialog_to_campaignApplyDialog"
+            app:destination="@id/campaignApplyDialog"
+            app:popUpTo="@id/campaignDetailsFragment" />
+        <action
+            android:id="@+id/action_campaignApplyReviewDialog_to_campaignsFragment"
+            app:destination="@id/campaignsFragment"
+            app:popUpTo="@id/campaignsFragment"
+            app:popUpToInclusive="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/campaignApplyIntervalDialog"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.allCampaigns.JoinCampaignIntervalDialog"
+        android:label="CampaignApplyIntervalDialog"
+        tools:layout="@layout/dialog_join_campaign_interval">
+        <action
+            android:id="@+id/action_campaignApplyIntervalDialog_to_campaignApplyDialog"
+            app:destination="@id/campaignApplyDialog"
+            app:popUpTo="@id/campaignDetailsFragment" />
+    </dialog>
+    <dialog
+        android:id="@+id/campaignApplySuccessDialog"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.allCampaigns.JoinCampaignSuccessDialog"
+        android:label="CampaignApplySuccessDialog"
+        tools:layout="@layout/dialog_join_campaign_success">
+        <action
+            android:id="@+id/action_campaignApplySuccessDialog_to_campaignsFragment"
+            app:destination="@id/campaignsFragment"
+            app:popUpTo="@id/campaignsFragment"
+            app:popUpToInclusive="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/campaignCompletedDialog"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.CampaignCompletedDialog"
+        android:label="CampaignCompletedDialog"
+        tools:layout="@layout/dialog_campaign_completed">
+        <action
+            android:id="@+id/action_campaignCompletedDialog_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/campaignManualSendDialog"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns.CampaignManualSendDialog"
+        android:label="CampaignManualSendDialog"
+        tools:layout="@layout/dialog_campaign_manual_send">
+        <action
+            android:id="@+id/action_campaignManualSendDialog_to_homeDetailsFragment"
+            app:destination="@id/homeDetailsFragment"
+            app:popUpTo="@id/homeDetailsFragment"
+            app:popUpToInclusive="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/campaignManualSendSuccessDialog"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns.CampaignManualSendSuccessDialog"
+        android:label="CampaignManualSendSuccessDialog"
+        tools:layout="@layout/dialog_campaign_manual_send_success">
+        <action
+            android:id="@+id/action_campaignManualSendSuccessDialog_to_homeDetailsFragment"
+            app:destination="@id/homeDetailsFragment"
+            app:popUpTo="@id/homeDetailsFragment"
+            app:popUpToInclusive="true" />
+    </dialog>
+    <fragment
+        android:id="@+id/settingsPreferenceFragment"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.profile.settings.SettingsPreferenceFragment"
+        android:label="@string/settings">
+        <action
+            android:id="@+id/action_settingsPreferenceFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/historyPreferenceFragment"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.profile.history.HistoryPreferenceFragment"
+        android:label="@string/campaign_history">
+        <action
+            android:id="@+id/action_historyPreferenceFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

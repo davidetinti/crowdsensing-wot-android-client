@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@drawable/empty_divider_10dp_vertical"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="32dp"
+        android:paddingTop="24dp"
+        android:showDividers="middle">
+
+        <TextView
+            android:id="@+id/reviewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/applyReviewTitleManual"
+            android:textAppearance="@style/TextAppearance.App.TitleLarge" />
+
+        <TextView
+            android:id="@+id/sendingInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/applyReviewManualExtraLabel"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.App.BodyLarge" />
+
+        <TextView
+            android:id="@+id/reviewIntervalLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/applyReviewIntervalLabelManual"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.App.BodyLarge" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@drawable/empty_divider_10dp_horizontal"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:showDividers="middle">
+
+            <TextView
+                android:id="@+id/intervalDigit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/oneDigitSampleValue"
+                android:textAppearance="@style/TextAppearance.App.HeadlineLarge"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/intervalUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/minutes"
+                android:textAppearance="@style/TextAppearance.App.BodyLarge" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/applyReviewSendingTimesLabel"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.App.BodyLarge" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@drawable/empty_divider_10dp_horizontal"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:showDividers="middle">
+
+            <TextView
+                android:id="@+id/sendingTimesDigit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/threeDigitSampleValue"
+                android:textAppearance="@style/TextAppearance.App.HeadlineLarge"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/sendingTimesUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/times"
+                android:textAppearance="@style/TextAppearance.App.BodyLarge" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@drawable/empty_divider_10dp_horizontal"
+        android:orientation="horizontal"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="16dp"
+        android:showDividers="middle">
+
+        <Button
+            android:id="@+id/reviewCancelBtn"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#254B5B"
+            android:text="@string/cancel"
+            android:textAppearance="@style/TextAppearance.App.LabelLarge"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/reviewConfirmBtn"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#254B5B"
+            android:text="@string/confirm"
+            android:textAppearance="@style/TextAppearance.App.LabelLarge"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+</LinearLayout>

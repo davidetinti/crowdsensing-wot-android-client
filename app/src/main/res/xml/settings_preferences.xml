@@ -1,0 +1,50 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <CheckBoxPreference
+        app:key="settings_gps_campaings"
+        app:summary="Mostra le campagne delimitate ad alcune zone geografiche. Ciò richiede l’accesso alla posizione del dispositivo."
+        app:title="Campagne GPS" />
+
+    <Preference
+        app:key="settings_sensors"
+        app:summary="Seleziona i sensori da rendere disponibili per la raccolta dati, che verranno utilizzati nelle campagne."
+        app:title="Sensori" />
+
+    <CheckBoxPreference
+        app:key="settings_sensor_accelerometer"
+        app:title="Accelerometer" />
+    <CheckBoxPreference
+        app:key="settings_sensor_gravity"
+        app:title="Gravity Sensor" />
+    <CheckBoxPreference
+        app:key="settings_sensor_ambient"
+        app:title="Ambient Temperature" />
+    <CheckBoxPreference
+        app:key="settings_sensor_gyroscope"
+        app:title="Gyroscope" />
+    <CheckBoxPreference
+        app:key="settings_sensor_light"
+        app:title="Light Sensor" />
+    <CheckBoxPreference
+        app:key="settings_sensor_orientation"
+        app:title="Orientation Sensor" />
+    <CheckBoxPreference
+        app:key="settings_sensor_proximity"
+        app:title="Proximity Sensor" />
+
+    <Preference
+        app:key="settings_data_send"
+        app:summary="Definisci i parametri standard per l’invio dei dati per le campagne attive."
+        app:title="Invio Dati" />
+
+    <CheckBoxPreference
+        app:key="settings_data_on_demand"
+        app:summary="Consenti alle campagne di gestire l’invio dei dati in autonomia"
+        app:title="Dati su richiesta" />
+
+    <Preference
+        app:key="settings_data_interval"
+        app:summary="30 secondi"
+        app:title="Intervall tra ogni invio dati" />
+
+</PreferenceScreen>

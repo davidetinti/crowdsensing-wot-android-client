@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name">CrowdSensingWotAndroidApp</string>
+    <string name="invalidEmail">Invalid email</string>
+    <string name="invalidPassword">Invalid password</string>
+    <string name="authBackgroundDescription" translatable="false">Auth background image</string>
+    <string name="authEmailPlaceholder" translatable="false">Email</string>
+    <string name="authPasswordPlaceholder" translatable="false">Password</string>
+    <string name="authTitleLogin">Welcome back</string>
+    <string name="authTitleRegister">Welcome</string>
+    <string name="authSubtitleLogin">Login to use the app services</string>
+    <string name="authSubtitleRegister">Register to start using the app services</string>
+    <string name="authRememberLoginText">Remember me</string>
+    <string name="loginButtonText">Log In</string>
+    <string name="registerButtonText">Register</string>
+    <string name="authSecondaryTextLogin">Don\'t have a profile?</string>
+    <string name="authSecondaryTextRegister">Are you already registered?</string>
+    <string name="defaultIconContentDescription" translatable="false">Default icon content description</string>
+    <string name="campaignTitleDefault" translatable="false">Default campaign title</string>
+    <string name="campaignOrganizationDefault" translatable="false">Default campaign organization</string>
+    <string name="campaignEndDateDefault" translatable="false">Ends in 4 days and 12 hours</string>
+    <string name="campaignDescriptionDefault" translatable="false">Campaign Description</string>
+    <string name="defaultPointsString" translatable="false">200 pts</string>
+    <string name="campaignDetailsRequiredLocation">Device location</string>
+    <string name="campaignDetailsRequiredGPS">GPS Data</string>
+    <string name="campaignDetailsInterval">The ideal interval between data uploads are</string>
+    <string name="campaignDetailsPoints">Completing the campaign grants a reward of up to</string>
+    <string name="points">points</string>
+    <string name="campaignDetailsDefaultRequiredSensor" translatable="false">&#8226; Location </string>
+    <string name="pointsDistributionInfo">Points will be awarded based on the level of reliability of the data provided. To obtain the maximum score it is necessary to send the data following the ideal configuration. If the data is sent at different intervals, the points obtained will be lower, proportionally to the deviation from the ideal configuration.</string>
+    <string name="authorizeButtonText">Authorize</string>
+    <string name="participateButtonText">Participate</string>
+    <string name="unsuitableButtonText">Unsuitable</string>
+    <string name="alreadyAppliedButtonText">You already participate in this campaign</string>
+    <string name="campaignDetailsDataSubtitle">Details of the data requested</string>
+    <string name="hour">hour</string>
+    <string name="hours">hours</string>
+    <string name="minute">minute</string>
+    <string name="minutes">minutes</string>
+    <string name="second">second</string>
+    <string name="seconds">seconds</string>
+    <string name="and">and</string>
+    <string name="applyCampaignTitle">Data submission method</string>
+    <string name="defaultSubmissionTitle">Automatic (default)</string>
+    <string name="defaultSubmissionSubtitle">The data will be sent automatically following the ideal campaign configuration.</string>
+    <string name="preferencesSubmissionTitle">Automatic (with preferences)</string>
+    <string name="preferencesSubmissionSubtitle">Send data automatically, following the preferences set.</string>
+    <string name="manualSubmissionTitle">Manual</string>
+    <string name="manualSubmissionSubtitle">Submit data manually, receiving a reduced amount of points.</string>
+    <string name="intervalSelectionSubtitle">No selection</string>
+    <string name="intervalSelectionTitle">Interval between each send</string>
+    <string name="cancel">Cancel</string>
+    <string name="next">Next</string>
+    <string name="confirm">Confirm</string>
+    <string name="applyReviewTitleAuto">Automatic sending</string>
+    <string name="applyReviewTitleManual">Manual sending</string>
+    <string name="applyReviewIntervalLabelAuto">The data will be sent every</string>
+    <string name="applyReviewIntervalLabelManual">The ideal data sending interval is every</string>
+
+    <string name="applyReviewSendingTimesLabel">For the completion of the campaign it is necessary to send the data</string>
+    <string name="applyReviewManualExtraLabel">You decide when to send the data</string>
+    <string name="applyReviewPreferencesExtraLabel">The data will be sent every</string>
+    <string name="times">times</string>
+    <string name="time">time</string>
+    <string name="oneDigitSampleValue" translatable="false">0</string>
+    <string name="twoDigitSampleValue" translatable="false">00</string>
+    <string name="threeDigitSampleValue" translatable="false">000</string>
+    <string name="permissionNotGranted">Permission not granted</string>
+    <string name="campaignDetailsSubmissions">The number of submissions requested is equal to</string>
+    <string name="campaignNavSectionTitle">Campaigns</string>
+    <string name="joinedCampaignsNavSectionTitle">My Campaigns</string>
+    <string name="profileNavSectionTitle">Profile</string>
+    <string name="crwsns_points">CRWSNS points</string>
+    <string name="settings">Settings</string>
+    <string name="campaign_history">Completed campaign history</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="logout" translatable="false">Logout</string>
+</resources>
