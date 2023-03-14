@@ -20,7 +20,7 @@ public class ProfilePreferenceFragment extends PreferenceFragmentCompat {
 
 	@Override
 	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-		setPreferencesFromResource(R.xml.profile_preferences, rootKey);
+		setPreferencesFromResource(R.xml.profile_menu, rootKey);
 		DashboardViewModel dashboardViewModel = new ViewModelProvider((ViewModelStoreOwner) requireContext()).get(DashboardViewModel.class);
 		Preference profileEmail = findPreference("profileEmail");
 		User user = dashboardViewModel.getUser().getValue();

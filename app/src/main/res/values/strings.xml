@@ -17,6 +17,7 @@
     <string name="defaultIconContentDescription" translatable="false">Default icon content description</string>
     <string name="campaignTitleDefault" translatable="false">Default campaign title</string>
     <string name="campaignOrganizationDefault" translatable="false">Default campaign organization</string>
+    <string name="campaignAboutSubtitle">What is it about</string>
     <string name="campaignEndDateDefault" translatable="false">Ends in 4 days and 12 hours</string>
     <string name="campaignDescriptionDefault" translatable="false">Campaign Description</string>
     <string name="defaultPointsString" translatable="false">200 pts</string>
@@ -74,4 +75,8 @@
     <string name="campaign_history">Completed campaign history</string>
     <string name="email" translatable="false">Email</string>
     <string name="logout" translatable="false">Logout</string>
+    <string name="autoSendDataButtonText">Pause sending data</string>
+    <string name="manualSendDataButtonText">Send data</string>
+    <string name="noAppliedCampaignAlertTitle">You don\'t participate in any campaign…</string>
+    <string name="noAppliedCampaignAlertDesc">Move to the "Campaigns" section and participate in some campaign to start.</string>
 </resources>

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.crowdsensingwotandroidapp.R;
 import com.example.crowdsensingwotandroidapp.dashboard.DashboardViewModel;
-import com.example.crowdsensingwotandroidapp.databinding.FragmentCampaignsBinding;
+import com.example.crowdsensingwotandroidapp.databinding.FragmentAllCampaignsBinding;
 import com.example.crowdsensingwotandroidapp.utils.campaign.AppliedCampaign;
 import com.example.crowdsensingwotandroidapp.utils.campaign.Campaign;
 import com.example.crowdsensingwotandroidapp.utils.ui.DefaultItemDecorator;
@@ -27,11 +27,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class CampaignsFragment extends Fragment {
 
 	private DashboardViewModel dashboardViewModel;
-	private FragmentCampaignsBinding binding;
+	private FragmentAllCampaignsBinding binding;
 	private RecyclerView campaignsRecyclerView;
 
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		binding = FragmentCampaignsBinding.inflate(inflater, container, false);
+		binding = FragmentAllCampaignsBinding.inflate(inflater, container, false);
 		return binding.getRoot();
 	}
 

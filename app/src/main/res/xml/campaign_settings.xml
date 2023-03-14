@@ -2,19 +2,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:iconSpaceReserved="false"
         app:key="campaignMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         app:summary="@string/manualSubmissionTitle"
-        app:title="Modalità di invio dati" />
+        app:title="Data submission mode" />
     <Preference
-        app:key="seeOldSubmissions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:summary="Visualizza i dati inviati"
-        app:title="Invii recenti" />
+        app:iconSpaceReserved="false"
+        app:key="seeOldSubmissions"
+        app:summary="View the list of previously sent data"
+        app:title="Submission history" />
     <Preference
+        app:iconSpaceReserved="false"
         app:key="abandonCampaign"
-        app:title="Abbandona la campagna" />
+        app:title="Leave campaign"
+        app:summary="Invalidate the participation in the campaign"/>
 
 </PreferenceScreen>

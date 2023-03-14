@@ -14,22 +14,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.crowdsensingwotandroidapp.R;
-import com.example.crowdsensingwotandroidapp.utils.campaign.AppliedCampaign;
 import com.example.crowdsensingwotandroidapp.dashboard.DashboardViewModel;
 import com.example.crowdsensingwotandroidapp.dashboard.allCampaigns.CampaignsAdapter;
-import com.example.crowdsensingwotandroidapp.databinding.FragmentHomeBinding;
+import com.example.crowdsensingwotandroidapp.databinding.FragmentJoinedCampaignsBinding;
+import com.example.crowdsensingwotandroidapp.utils.campaign.AppliedCampaign;
 import com.example.crowdsensingwotandroidapp.utils.ui.DefaultItemDecorator;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class JoinedCampaignsFragment extends Fragment {
 
 	private DashboardViewModel dashboardViewModel;
-	private FragmentHomeBinding binding;
+	private FragmentJoinedCampaignsBinding binding;
 	private RecyclerView campaignsRecyclerView;
 
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		binding = FragmentHomeBinding.inflate(inflater, container, false);
+		binding = FragmentJoinedCampaignsBinding.inflate(inflater, container, false);
 		return binding.getRoot();
 	}
 
@@ -45,14 +45,25 @@ public class HomeFragment extends Fragment {
 				.observe(getViewLifecycleOwner(), this::reloadRecyclerView);
 		dashboardViewModel.getCompletedCampaignPoints().observe(getViewLifecycleOwner(), points -> {
 			if (points != null) {
-				NavHostFragment.findNavController(this).navigate(R.id.action_homeFragment_to_campaignCompletedDialog);
+				NavHostFragment.findNavController(this)
+						.navigate(R.id.action_homeFragment_to_campaignCompletedDialog);
 			}
 		});
 	}
 
 	private void reloadRecyclerView(ArrayList<AppliedCampaign> userCampaigns) {
 		if (userCampaigns != null) {
-			campaignsRecyclerView.setAdapter(new HomeAdapter(getContext(), userCampaigns));
+			if (userCampaigns.isEmpty()) {
+				binding.userCampaignsRecyclerView.setVisibility(View.GONE);
+				binding.noCampaignAlert.setVisibility(View.VISIBLE);
+			} else {
+				binding.userCampaignsRecyclerView.setVisibility(View.VISIBLE);
+				binding.noCampaignAlert.setVisibility(View.GONE);
+				campaignsRecyclerView.setAdapter(new JoinedCampaignsAdapter(getContext(), userCampaigns));
+			}
+		} else {
+			binding.userCampaignsRecyclerView.setVisibility(View.GONE);
+			binding.noCampaignAlert.setVisibility(View.VISIBLE);
 		}
 	}
 

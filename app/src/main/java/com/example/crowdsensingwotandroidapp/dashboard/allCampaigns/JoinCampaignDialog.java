@@ -94,7 +94,7 @@ public class JoinCampaignDialog extends DialogFragment {
 		dashboardViewModel.getApplicationSelectedInterval().setValue(null);
 		dashboardViewModel.getApplicationSelectedSubmissionMode().setValue(null);
 		NavHostFragment.findNavController(this)
-				.navigate(R.id.action_campaignApplyDialog_to_campaignDetailsFragment);
+				.navigate(R.id.action_campaignApplyDialog_to_campaignDetailsDialog);
 		super.onCancel(dialog);
 	}
 }

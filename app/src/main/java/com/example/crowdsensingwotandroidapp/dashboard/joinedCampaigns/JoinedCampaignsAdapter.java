@@ -20,12 +20,12 @@ import com.example.crowdsensingwotandroidapp.databinding.CardCampaignBinding;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
+public class JoinedCampaignsAdapter extends RecyclerView.Adapter<JoinedCampaignsAdapter.ViewHolder> {
 
 	private final ArrayList<AppliedCampaign> userCampaigns;
 	private final DashboardViewModel dashboardViewModel;
 
-	public HomeAdapter(Context applicationContext, ArrayList<AppliedCampaign> userCampaigns) {
+	public JoinedCampaignsAdapter(Context applicationContext, ArrayList<AppliedCampaign> userCampaigns) {
 		this.userCampaigns = userCampaigns;
 		this.dashboardViewModel = new ViewModelProvider((ViewModelStoreOwner) applicationContext).get(DashboardViewModel.class);
 	}

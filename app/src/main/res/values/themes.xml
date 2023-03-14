@@ -139,12 +139,18 @@
     </style>
 
     <style name="IconStyle">
-        <item name="android:tint">#577C8D</item>
+        <item name="android:tint">#083544</item>
     </style>
 
     <style name="BadgeStyle">
         <item name="strokeColor">@android:color/transparent</item>
         <item name="cardBackgroundColor">#577C8D</item>
+        <item name="cardCornerRadius">100dp</item>
+    </style>
+
+    <style name="PointBadgeStyle">
+        <item name="strokeColor">@android:color/transparent</item>
+        <item name="cardBackgroundColor">#083544</item>
         <item name="cardCornerRadius">100dp</item>
     </style>
 

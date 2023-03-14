@@ -26,8 +26,6 @@ import com.example.crowdsensingwotandroidapp.utils.campaign.Campaign;
 import com.example.crowdsensingwotandroidapp.utils.campaign.SubmissionMode;
 import com.example.crowdsensingwotandroidapp.utils.campaign.submission.DataSubmission;
 import com.example.crowdsensingwotandroidapp.utils.network.NetworkStateManager;
-import com.example.wot_servient.la_mqtt.utils.LAMqttLocationProvider;
-import com.example.wot_servient.la_mqtt.utils.Location;
 import com.example.wot_servient.wot.DefaultWot;
 import com.example.wot_servient.wot.Wot;
 import com.example.wot_servient.wot.WotException;
@@ -269,7 +267,6 @@ public class ServientService extends Service {
 		mqtt.put("username", sharedPreferences.getString("mqttServerUsername", resources.getString(R.string.mqttUsername)));
 		mqtt.put("password", sharedPreferences.getString("mqttServerPassword ", resources.getString(R.string.mqttPassword)));
 		mqtt.put("all-TD-topic", sharedPreferences.getString("mqttServerAllTDTopic", resources.getString(R.string.mqttAllTDTopic)));
-
 		// Client factories
 		JSONArray clientFactories = new JSONArray();
 		// HTTP

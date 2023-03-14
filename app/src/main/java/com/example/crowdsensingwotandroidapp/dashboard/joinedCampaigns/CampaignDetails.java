@@ -26,7 +26,7 @@ import com.example.crowdsensingwotandroidapp.utils.campaign.AppliedCampaign;
 
 import java.util.Objects;
 
-public class HomeDetailsFragment extends Fragment {
+public class CampaignDetails extends Fragment {
 
 	private AppliedCampaign campaign;
 	private DashboardViewModel dashboardViewModel;
@@ -89,21 +89,22 @@ public class HomeDetailsFragment extends Fragment {
 		// Button
 		switch (campaign.getMode()) {
 			case AUTOMATIC: {
-				binding.campaignDetailsActionButton.setText("Stop/Start");
+				binding.campaignDetailsActionButton.setText(R.string.autoSendDataButtonText);
 				binding.campaignDetailsActionButton.setBackgroundColor(Color.parseColor("#254B5B"));
 				binding.campaignDetailsActionButton.setOnClickListener(v -> {
 				});
 				break;
 			}
 			case AUTO_WITH_PREF: {
-				binding.campaignDetailsActionButton.setText("Stop/Start");
+				binding.campaignDetailsActionButton.setText(R.string.autoSendDataButtonText);
 				binding.campaignDetailsActionButton.setBackgroundColor(Color.parseColor("#254B5B"));
 				break;
 			}
 			case MANUAL: {
-				binding.campaignDetailsActionButton.setText("Invia");
+				binding.campaignDetailsActionButton.setText(R.string.manualSendDataButtonText);
 				binding.campaignDetailsActionButton.setBackgroundColor(Color.parseColor("#254B5B"));
 				binding.campaignDetailsActionButton.setOnClickListener(v -> {
+
 					Navigation.findNavController(v)
 							.navigate(R.id.action_homeDetailsFragment_to_campaignManualSendDialog);
 				});

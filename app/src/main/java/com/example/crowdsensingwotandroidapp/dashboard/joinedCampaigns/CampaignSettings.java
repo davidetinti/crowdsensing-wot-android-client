@@ -2,6 +2,7 @@ package com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.Navigation;
@@ -15,13 +16,15 @@ import com.example.crowdsensingwotandroidapp.dashboard.DashboardViewModel;
 
 import java.util.Objects;
 
-public class HomeDetailsSettings extends PreferenceFragmentCompat {
+public class CampaignSettings extends PreferenceFragmentCompat {
 
 	private DashboardViewModel dashboardViewModel;
 
 	@Override
 	public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-		setPreferencesFromResource(R.xml.home_details_settings, rootKey);
+		setPreferencesFromResource(R.xml.campaign_settings, rootKey);
+		Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar())
+				.setTitle("");
 		dashboardViewModel = new ViewModelProvider((ViewModelStoreOwner) requireContext()).get(DashboardViewModel.class);
 		Preference campaignMode = findPreference("campaignMode");
 		AppliedCampaign campaign = dashboardViewModel.getUserSelectedCampaign().getValue();

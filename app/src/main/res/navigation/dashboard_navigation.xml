@@ -5,31 +5,16 @@
     android:id="@+id/dashboardNavigation"
     app:startDestination="@id/homeFragment">
     <fragment
-        android:id="@+id/campaignDetailsFragment"
-        android:name="com.example.crowdsensingwotandroidapp.dashboard.allCampaigns.CampaignDetailsFragment"
-        tools:layout="@layout/fragment_campaign_details">
-        <action
-            android:id="@+id/action_campaignDetailsFragment_to_campaignsFragment"
-            app:destination="@id/campaignsFragment"
-            app:popUpTo="@id/campaignsFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_campaignDetailsFragment_to_campaignApplyDialog"
-            app:destination="@id/campaignApplyDialog"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out" />
-    </fragment>
-    <fragment
         android:id="@+id/campaignsFragment"
         android:name="com.example.crowdsensingwotandroidapp.dashboard.allCampaigns.CampaignsFragment"
         android:label="@string/campaignNavSectionTitle"
-        tools:layout="@layout/fragment_campaigns">
-        <action
-            android:id="@+id/action_campaignsFragment_to_campaignDetailsFragment"
-            app:destination="@id/campaignDetailsFragment" />
+        tools:layout="@layout/fragment_all_campaigns">
         <action
             android:id="@+id/action_campaignsFragment_to_campaignApplySuccessDialog"
             app:destination="@id/campaignApplySuccessDialog" />
+        <action
+            android:id="@+id/action_campaignsFragment_to_campaignDetailsDialog"
+            app:destination="@id/campaignDetailsDialog" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -45,9 +30,9 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns.HomeFragment"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns.JoinedCampaignsFragment"
         android:label="@string/joinedCampaignsNavSectionTitle"
-        tools:layout="@layout/fragment_home">
+        tools:layout="@layout/fragment_joined_campaigns">
         <action
             android:id="@+id/action_homeFragment_to_homeDetailsFragment"
             app:destination="@id/homeDetailsFragment" />
@@ -57,7 +42,7 @@
     </fragment>
     <fragment
         android:id="@+id/homeDetailsFragment"
-        android:name="com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns.HomeDetailsFragment"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns.CampaignDetails"
         tools:layout="@layout/fragment_campaign_details">
         <action
             android:id="@+id/action_homeDetailsFragment_to_homeFragment"
@@ -76,7 +61,7 @@
     </fragment>
     <fragment
         android:id="@+id/homeDetailsSettings"
-        android:name="com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns.HomeDetailsSettings"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns.CampaignSettings"
         android:label="HomeDetailsSettings" >
         <action
             android:id="@+id/action_homeDetailsSettings_to_homeFragment"
@@ -90,20 +75,19 @@
         android:label="CampaignApplyDialog"
         tools:layout="@layout/dialog_join_campaign">
         <action
-            android:id="@+id/action_campaignApplyDialog_to_campaignDetailsFragment"
-            app:destination="@id/campaignDetailsFragment"
-            app:popUpTo="@id/campaignDetailsFragment"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/action_campaignApplyDialog_to_campaignApplyReviewDialog"
             app:destination="@id/campaignApplyReviewDialog"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
-            app:popUpTo="@id/campaignDetailsFragment" />
+            app:popUpTo="@id/campaignsFragment" />
         <action
             android:id="@+id/action_campaignApplyDialog_to_campaignApplyIntervalDialog"
             app:destination="@id/campaignApplyIntervalDialog"
-            app:popUpTo="@id/campaignDetailsFragment" />
+            app:popUpTo="@id/campaignsFragment" />
+        <action
+            android:id="@+id/action_campaignApplyDialog_to_campaignDetailsDialog"
+            app:destination="@id/campaignDetailsDialog"
+            app:popUpTo="@id/campaignsFragment" />
     </dialog>
     <dialog
         android:id="@+id/campaignApplyReviewDialog"
@@ -113,7 +97,7 @@
         <action
             android:id="@+id/action_campaignApplyReviewDialog_to_campaignApplyDialog"
             app:destination="@id/campaignApplyDialog"
-            app:popUpTo="@id/campaignDetailsFragment" />
+            app:popUpTo="@id/campaignsFragment" />
         <action
             android:id="@+id/action_campaignApplyReviewDialog_to_campaignsFragment"
             app:destination="@id/campaignsFragment"
@@ -128,7 +112,7 @@
         <action
             android:id="@+id/action_campaignApplyIntervalDialog_to_campaignApplyDialog"
             app:destination="@id/campaignApplyDialog"
-            app:popUpTo="@id/campaignDetailsFragment" />
+            app:popUpTo="@id/campaignsFragment" />
     </dialog>
     <dialog
         android:id="@+id/campaignApplySuccessDialog"
@@ -194,4 +178,18 @@
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <dialog
+        android:id="@+id/campaignDetailsDialog"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.allCampaigns.CampaignDetailsDialog"
+        android:label="CampaignDetailsDialog"
+        tools:layout="@layout/dialog_campaign_details">
+        <action
+            android:id="@+id/action_campaignDetailsDialog_to_campaignApplyDialog"
+            app:destination="@id/campaignApplyDialog"
+            app:popUpTo="@id/campaignsFragment" />
+        <action
+            android:id="@+id/action_campaignDetailsDialog_to_campaignsFragment"
+            app:destination="@id/campaignsFragment"
+            app:popUpTo="@id/campaignsFragment" />
+    </dialog>
 </navigation>

@@ -2,48 +2,51 @@ package com.example.crowdsensingwotandroidapp.dashboard.allCampaigns;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.crowdsensingwotandroidapp.MainViewModel;
 import com.example.crowdsensingwotandroidapp.R;
 import com.example.crowdsensingwotandroidapp.dashboard.DashboardViewModel;
-import com.example.crowdsensingwotandroidapp.databinding.FragmentCampaignDetailsBinding;
+import com.example.crowdsensingwotandroidapp.databinding.DialogCampaignDetailsBinding;
 import com.example.crowdsensingwotandroidapp.utils.campaign.Campaign;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 
-public class CampaignDetailsFragment extends DialogFragment {
+public class CampaignDetailsDialog extends DialogFragment {
 
 	private Campaign campaign;
 	private DashboardViewModel dashboardViewModel;
-	private FragmentCampaignDetailsBinding binding;
+	private DialogCampaignDetailsBinding binding;
 	private ActivityResultLauncher<String[]> activityResultLauncher;
+	private AlertDialog dialog;
 
-	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		binding = FragmentCampaignDetailsBinding.inflate(inflater, container, false);
+	@NonNull
+	@Override
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
+		binding = DialogCampaignDetailsBinding.inflate(getLayoutInflater());
+		builder.setView(binding.getRoot());
+		dialog = builder.create();
+		dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
 		activityResultLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), permissions -> {
 			boolean permissionsGranted = true;
 			for (Map.Entry<String, Boolean> entry : permissions.entrySet()) {
 				permissionsGranted = permissionsGranted && entry.getValue();
 			}
 			if (permissionsGranted) {
-				initView();
+				initDialog();
 			} else {
 				binding.campaignDetailsActionButton.setText(R.string.permissionNotGranted);
 				binding.campaignDetailsActionButton.setTextColor(Color.WHITE);
@@ -51,24 +54,16 @@ public class CampaignDetailsFragment extends DialogFragment {
 				binding.campaignDetailsActionButton.setEnabled(false);
 			}
 		});
-		return binding.getRoot();
-	}
-
-	@Override
-	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar())
-				.setTitle("");
-		dashboardViewModel = new ViewModelProvider(requireActivity()).get(DashboardViewModel.class);
 		campaign = dashboardViewModel.getApplicationSelectedCampaign().getValue();
 		if (campaign == null)
-			MainViewModel.getErrorToShow().setValue(new Exception("Error with data"));
+			dismiss();
 		else
-			initView();
+			initDialog();
+		return dialog;
 	}
 
 	@SuppressLint("MissingPermission")
-	private void initView() {
+	private void initDialog() {
 		binding.campaignDetailsTitle.setText(campaign.getTitle());
 		binding.campaignDetailsOrganization.setText(campaign.getOrganization());
 		binding.campaignDetailsDescription.setText(campaign.getDescription());
@@ -94,8 +89,8 @@ public class CampaignDetailsFragment extends DialogFragment {
 				binding.campaignDetailsActionButton.setText(R.string.participateButtonText);
 				binding.campaignDetailsActionButton.setBackgroundColor(Color.parseColor("#254B5B"));
 				binding.campaignDetailsActionButton.setOnClickListener(v -> {
-					NavController controller = Navigation.findNavController(v);
-					controller.navigate(R.id.action_campaignDetailsFragment_to_campaignApplyDialog);
+					NavHostFragment.findNavController(this)
+							.navigate(R.id.action_campaignDetailsDialog_to_campaignApplyDialog);
 				});
 			} else {
 				binding.campaignDetailsActionButton.setText(R.string.authorizeButtonText);
@@ -119,5 +114,13 @@ public class CampaignDetailsFragment extends DialogFragment {
 			binding.campaignDetailsActionButton.setBackgroundColor(Color.parseColor("#707973"));
 			binding.campaignDetailsActionButton.setEnabled(false);
 		}
+	}
+
+	@Override
+	public void onCancel(@NonNull DialogInterface dialog) {
+		dashboardViewModel.getApplicationSelectedCampaign().setValue(null);
+		NavHostFragment.findNavController(this)
+				.navigate(R.id.action_campaignDetailsDialog_to_campaignsFragment);
+		super.onCancel(dialog);
 	}
 }

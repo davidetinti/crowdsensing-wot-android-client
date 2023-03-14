@@ -58,7 +58,8 @@ public class CampaignsAdapter extends RecyclerView.Adapter<CampaignsAdapter.View
 		binding.getRoot().setOnClickListener(v -> {
 			dashboardViewModel.getApplicationSelectedCampaign().setValue(campaign);
 			NavController controller = Navigation.findNavController(v);
-			controller.navigate(R.id.action_campaignsFragment_to_campaignDetailsFragment);
+			controller.navigate(R.id.action_campaignsFragment_to_campaignDetailsDialog);
+			//controller.navigate(R.id.action_campaignsFragment_to_campaignDetailsFragment);
 		});
 	}
 
