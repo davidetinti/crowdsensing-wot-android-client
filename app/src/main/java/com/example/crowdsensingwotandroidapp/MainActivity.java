@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
 		MainViewModel.getErrorToShow().observe(this, error -> {
 			if (error != null) {
 				error.printStackTrace();
-				while (error.getCause() != null) error = error.getCause();
+				while (error.getCause() != null)
+					error = error.getCause();
 				String message = error.getMessage() != null ? error.getMessage() : "Error";
 				Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show();
 				MainViewModel.getErrorToShow().setValue(null);

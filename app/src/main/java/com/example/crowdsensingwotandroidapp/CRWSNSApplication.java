@@ -5,6 +5,7 @@ import android.app.Application;
 import com.example.crowdsensingwotandroidapp.utils.network.NetworkMonitoringUtil;
 
 public class CRWSNSApplication extends Application {
+
 	public NetworkMonitoringUtil mNetworkMonitoringUtil;
 
 	@Override
