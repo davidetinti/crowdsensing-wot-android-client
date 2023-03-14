@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Invia dati"
+            android:text="@string/manualSendDataButtonText"
             android:textAppearance="@style/TextAppearance.App.TitleLarge" />
 
         <LinearLayout
@@ -31,25 +31,23 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Posizione"
-                android:textAlignment="center"
+                android:gravity="center"
+                android:text="@string/campaignDetailsRequiredLocation"
                 android:textAppearance="@style/TextAppearance.App.BodyLarge" />
 
-            <TextView
-                android:id="@+id/manualSendLatitude"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/locationTextField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Latitudine"
-                android:textAlignment="viewStart"
-                android:textAppearance="@style/TextAppearance.App.BodyLarge" />
+                android:enabled="false"
+                app:hintEnabled="true">
 
-            <TextView
-                android:id="@+id/manualSendLongitude"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Longitudine"
-                android:textAlignment="viewStart"
-                android:textAppearance="@style/TextAppearance.App.BodyLarge" />
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 

@@ -1,12 +1,14 @@
 package com.example.crowdsensingwotandroidapp.dashboard;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -26,6 +28,12 @@ import com.example.crowdsensingwotandroidapp.utils.campaign.submission.DataSubmi
 import com.example.crowdsensingwotandroidapp.utils.network.NetworkStateManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,9 +67,29 @@ public class DashboardViewModel extends AndroidViewModel {
 	// User data
 	private final MutableLiveData<User> user = new MutableLiveData<>(null);
 	// Reference to main ViewModel used to add or remove loading
+	private final MutableLiveData<Location> deviceLocation = new MutableLiveData<>(null);
+	private final FusedLocationProviderClient fusedLocationProviderClient;
 
+	@SuppressLint("MissingPermission")
 	public DashboardViewModel(@NonNull Application application) {
 		super(application);
+		fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplication().getApplicationContext());
+		initLocationTracking();
+	}
+
+	@SuppressLint("MissingPermission")
+	private void initLocationTracking() {
+		LocationRequest locationRequest = new LocationRequest.Builder(10000).setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+				.build();
+		LocationCallback locationCallback = new LocationCallback() {
+			@Override
+			public void onLocationResult(@NonNull LocationResult locationResult) {
+				for (Location location : locationResult.getLocations()) {
+					deviceLocation.setValue(location);
+				}
+			}
+		};
+		fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
 	}
 
 	public MutableLiveData<ArrayList<Campaign>> getAllCampaigns() {
@@ -106,6 +134,10 @@ public class DashboardViewModel extends AndroidViewModel {
 
 	public MutableLiveData<User> getUser() {
 		return user;
+	}
+
+	public MutableLiveData<Location> getDeviceLocation() {
+		return deviceLocation;
 	}
 
 	/**

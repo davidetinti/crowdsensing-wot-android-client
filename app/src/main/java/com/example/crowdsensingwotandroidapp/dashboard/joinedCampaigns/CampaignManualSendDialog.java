@@ -3,11 +3,9 @@ package com.example.crowdsensingwotandroidapp.dashboard.joinedCampaigns;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -49,9 +47,17 @@ public class CampaignManualSendDialog extends DialogFragment {
 			case "location":
 				binding.inputManualSendWrapper.setVisibility(View.GONE);
 				binding.locationManualSendWrapper.setVisibility(View.VISIBLE);
-				binding.manualSendLatitude.setText("Current Latitude");
-				binding.manualSendLongitude.setText("Current Longitude");
-				dashboardViewModel.getManualData().setValue(new LocationSubmission(300.0, 200.0));
+				dashboardViewModel.getDeviceLocation()
+						.observe(this, location -> {
+							if (location != null) {
+								binding.locationTextField.setHint(location.getLatitude() + ", " + location.getLongitude());
+								dashboardViewModel.getManualData()
+										.setValue(new LocationSubmission(location.getLatitude(), location.getLongitude()));
+							} else {
+								binding.locationTextField.setHint("NULL Location");
+							}
+						});
+				//dashboardViewModel.requireLocation();
 				break;
 			default: {
 				dialog.cancel();
