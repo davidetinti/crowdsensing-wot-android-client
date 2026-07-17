@@ -52,7 +52,7 @@ public class CampaignManualSendDialog extends DialogFragment {
 							if (location != null) {
 								binding.locationTextField.setHint(location.getLatitude() + ", " + location.getLongitude());
 								dashboardViewModel.getManualData()
-										.setValue(new LocationSubmission(location.getLatitude(), location.getLongitude()));
+										.setValue(new LocationSubmission(location.getLatitude(), location.getLongitude(), location.getAccuracy()));
 							} else {
 								binding.locationTextField.setHint("NULL Location");
 							}

@@ -95,7 +95,12 @@ public class CoreApiClient {
 				tokens.get("refreshToken").asText());
 	}
 
-	private synchronized boolean tryRefresh() {
+	/**
+	 * Rinnova la coppia di token (rotazione del refresh). Pubblico perche' anche
+	 * le azioni WoT verso il Master usano l'access token: chi le invoca puo'
+	 * rinnovarlo in anticipo se sta per scadere (DataFlyIntegration.freshToken).
+	 */
+	public synchronized boolean refreshTokens() {
 		String refreshToken = config.getRefreshToken();
 		if (refreshToken == null)
 			return false;
@@ -119,7 +124,7 @@ public class CoreApiClient {
 					authenticated ? config.getAccessToken() : null);
 		} catch (CoreApiException e) {
 			// access token scaduto: un solo retry dopo il refresh (rotazione)
-			if (e.status == 401 && authenticated && tryRefresh()) {
+			if (e.status == 401 && authenticated && refreshTokens()) {
 				return rawRequest(method, path, body, config.getAccessToken());
 			}
 			throw e;

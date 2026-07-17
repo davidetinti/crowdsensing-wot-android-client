@@ -35,19 +35,38 @@ sull'executor già usato da `ServientService`.
 | `ping` ogni 10 s sulla Dashboard | `ServientService` TimerTask | invariato nel periodo: `DataFlyIntegration.ping()` |
 | esposizione del servient device (MQTT) | `ServientService` | resta com'è: si riaggancia in **M7** con credenziali per-device e ACL |
 
+## Cablaggio UI (fatto)
+
+La UI esistente **non è stata toccata**: `ServientService` è stato riscritto
+mantenendo firma per firma l'API pubblica usata da `AuthFragment` e
+`DashboardViewModel` e delegando tutto al layer `datafly/`. In dettaglio:
+
+| Metodo (firma invariata) | Ora fa |
+|---|---|
+| `register/login(email, password)` | `CoreApiClient.signup/login` → salva email e token → `registerDevice()` sul Master → avvia il ping (10 s). Restituisce **l'email** come "bearer": è stabile tra sessioni (il JWT ruota a ogni refresh), così le adesioni salvate in SharedPreferences col bearer come namespace sopravvivono |
+| `fetchData(bearer)` | `wallet()`: punti = (crediti disponibili + in vesting) / 100 |
+| `fetchCampaigns()` | `listCampaigns(lat, lon)` con l'ultima posizione nota (best effort) e mappatura sulle chiavi legacy di `Campaign(HashMap)`: `points` = crediti netti stimati, `submission_required` = target della campagna, `organization` = nome del committente, `area` → `{circle, radius, center_lat, center_lng}` |
+| `applyToCampaign(..., mode, interval)` | `joinCampaign` con mappa modi: `AUTOMATIC→"push"` (errore fino a M7), `AUTO_WITH_PREF→"pull_auto"`, `MANUAL→"pull_manual"`; `interval` resta preferenza locale |
+| `sendManualData(...)` | `submitLocation(lat, lon, accuracy)`; accettata → `{ok, remaining, score, netCents}` (la UI usa `remaining==0` per il completamento), respinta → `{ok:false, error:<motivi validazione>}` |
+| `leaveCampaign` / `logout` | `leaveCampaign` sul Master / revoca del refresh token sul Core + stop del ping |
+
+Modifiche minime fuori dal service: `LocationSubmission` ora porta anche
+l'`accuracy` (richiesta dalla spec `core/location@1.0.0`; il costruttore
+vecchio resta valido) e `CampaignManualSendDialog` la valorizza dal fix GPS.
+Il vecchio stack wot-servient (esposizione MQTT del device, TDD diretta) non è
+più nel percorso critico: si riaggancia in **M7** con credenziali per-device.
+
 ## Stato e come procedere
 
 - ⚠️ **Questo branch non è stato compilato**: l'ambiente di sviluppo remoto non
   dispone di Android SDK/Gradle. Il layer è scritto contro le API pubbliche del
-  monorepo (verificate da 88 test lato piattaforma, simulatore incluso, che
+  monorepo (verificate dai test lato piattaforma, simulatore incluso, che
   esercita esattamente le stesse chiamate).
 - Passi suggeriti, in ordine:
   1. `./gradlew assembleDebug` e correzione di eventuali dettagli di compilazione;
   2. smoke manuale con lo stack su (`docker compose up` nel monorepo, emulatore
      con default `10.0.2.2`): login → registrazione device → lista campagne →
-     join → invio manuale → esito con crediti → wallet;
-  3. cablaggio UI seguendo la mappa sopra (i punti di intervento sono
-     `ServientService`, `DashboardViewModel`, `JoinCampaignReviewDialog`,
-     `AuthFragment`), sostituendo le invocazioni della vecchia Dashboard con la
-     facciata `DataFlyIntegration`;
-  4. schermata Wallet (nuova) su `DataFlyIntegration.wallet()`.
+     join (`MANUAL` o `AUTO_WITH_PREF`) → invio manuale → esito con crediti →
+     punti aggiornati in dashboard;
+  3. schermata Wallet dedicata (nuova) su `DataFlyIntegration.wallet()` per
+     mostrare disponibile/in-vesting e lo storico movimenti.

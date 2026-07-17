@@ -18,6 +18,7 @@ public final class DataFlyConfig {
 	private static final String KEY_MASTER_TD_URL = "masterTdUrl";
 	private static final String KEY_ACCESS_TOKEN = "accessToken";
 	private static final String KEY_REFRESH_TOKEN = "refreshToken";
+	private static final String KEY_EMAIL = "email";
 
 	// Default di sviluppo: emulatore Android -> host (10.0.2.2)
 	private static final String DEFAULT_CORE_URL = "http://10.0.2.2:8080";
@@ -57,6 +58,15 @@ public final class DataFlyConfig {
 
 	public void clearTokens() {
 		prefs.edit().remove(KEY_ACCESS_TOKEN).remove(KEY_REFRESH_TOKEN).apply();
+	}
+
+	/** Email dell'utente loggato: identificatore stabile mostrato/usato dalla UI. */
+	public String getEmail() {
+		return prefs.getString(KEY_EMAIL, null);
+	}
+
+	public void saveEmail(String email) {
+		prefs.edit().putString(KEY_EMAIL, email).apply();
 	}
 
 	public boolean isLoggedIn() {

@@ -45,6 +45,10 @@ public class DataFlyIntegration {
 		return master;
 	}
 
+	public DataFlyConfig config() {
+		return config;
+	}
+
 	/** deviceId stabile "smartphone_<uuid>" (stesso schema della tesi). */
 	public String deviceId() {
 		SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
@@ -62,7 +66,7 @@ public class DataFlyIntegration {
 	 * @return le capability registrate (JsonNode array)
 	 */
 	public JsonNode registerDevice() throws IOException {
-		String token = requireToken();
+		String token = freshToken();
 		List<SensorDiscovery.DiscoveredCapability> capabilities =
 				SensorDiscovery.discover(context);
 		if (capabilities.isEmpty()) {
@@ -77,20 +81,20 @@ public class DataFlyIntegration {
 
 	/** Campagne compatibili con questo device nella posizione data (opzionale). */
 	public JsonNode listCampaigns(Double lat, Double lon) throws IOException {
-		JsonNode result = master.listCampaigns(requireToken(), deviceId(), lat, lon);
+		JsonNode result = master.listCampaigns(freshToken(), deviceId(), lat, lon);
 		requireOk(result, "listCampaigns");
 		return result.get("campaigns");
 	}
 
 	/** Adesione con un tap. mode: "pull_auto" | "pull_manual" ("push" da M7). */
 	public String joinCampaign(String campaignId, String mode) throws IOException {
-		JsonNode result = master.joinCampaign(requireToken(), deviceId(), campaignId, mode);
+		JsonNode result = master.joinCampaign(freshToken(), deviceId(), campaignId, mode);
 		requireOk(result, "joinCampaign");
 		return result.get("participationId").asText();
 	}
 
 	public void leaveCampaign(String campaignId) throws IOException {
-		requireOk(master.leaveCampaign(requireToken(), deviceId(), campaignId), "leaveCampaign");
+		requireOk(master.leaveCampaign(freshToken(), deviceId(), campaignId), "leaveCampaign");
 	}
 
 	/**
@@ -104,7 +108,7 @@ public class DataFlyIntegration {
 		payload.put("lat", lat).put("lon", lon).put("accuracy", accuracy);
 		payload.put("capturedAt", java.time.format.DateTimeFormatter.ISO_INSTANT
 				.format(java.time.Instant.now()));
-		JsonNode result = master.submitData(requireToken(), deviceId(), campaignId, payload);
+		JsonNode result = master.submitData(freshToken(), deviceId(), campaignId, payload);
 		requireOk(result, "submitData");
 		return result;
 	}
@@ -120,6 +124,34 @@ public class DataFlyIntegration {
 	}
 
 	// --- interni ---
+
+	/**
+	 * Access token pronto per un'azione WoT verso il Master: se sta per scadere
+	 * (o e' gia' scaduto) viene rinnovato prima, perche' il Master si limita a
+	 * verificarlo e non puo' fare refresh al posto del device.
+	 */
+	public String freshToken() throws IOException {
+		String token = requireToken();
+		if (isExpiringSoon(token) && core.refreshTokens()) {
+			token = requireToken();
+		}
+		return token;
+	}
+
+	/** true se il JWT scade entro 60 secondi. */
+	private static boolean isExpiringSoon(String jwt) {
+		try {
+			String[] parts = jwt.split("\\.");
+			if (parts.length < 2)
+				return false;
+			byte[] payload = java.util.Base64.getUrlDecoder().decode(parts[1]);
+			JsonNode claims = new com.fasterxml.jackson.databind.ObjectMapper().readTree(payload);
+			long exp = claims.path("exp").asLong(0);
+			return exp > 0 && exp * 1000L < System.currentTimeMillis() + 60_000L;
+		} catch (RuntimeException | IOException e) {
+			return false;
+		}
+	}
 
 	private String requireToken() throws IOException {
 		String token = config.getAccessToken();
