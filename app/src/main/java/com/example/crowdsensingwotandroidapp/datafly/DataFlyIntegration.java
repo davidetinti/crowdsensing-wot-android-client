@@ -76,6 +76,14 @@ public class DataFlyIntegration {
 		ObjectNode td = DeviceTdFactory.build(deviceId(), capabilities);
 		JsonNode result = master.registerDevice(token, td);
 		requireOk(result, "registerDevice");
+		// M7: se il broker ha dynsec, la risposta porta le credenziali MQTT
+		// per-device (password ruotata a ogni registrazione): si salvano per
+		// il client push (ASK/ANSWER sul canale protetto).
+		JsonNode mqtt = result.get("mqtt");
+		if (mqtt != null && mqtt.hasNonNull("url")) {
+			config.saveMqttCredentials(mqtt.get("url").asText(),
+					mqtt.get("username").asText(), mqtt.get("password").asText());
+		}
 		return result.get("capabilities");
 	}
 

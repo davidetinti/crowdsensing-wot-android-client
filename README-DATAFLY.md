@@ -56,6 +56,21 @@ vecchio resta valido) e `CampaignManualSendDialog` la valorizza dal fix GPS.
 Il vecchio stack wot-servient (esposizione MQTT del device, TDD diretta) non è
 più nel percorso critico: si riaggancia in **M7** con credenziali per-device.
 
+## Canale push M7 (piattaforma pronta, client da cablare)
+
+Dalla M7 della piattaforma, `registerDevice` restituisce anche le
+**credenziali MQTT per-device** (broker dynsec, ACL deny-default): il layer le
+salva già in `DataFlyConfig` (`saveMqttCredentials`, ruotate a ogni
+registrazione). Per attivare la modalità `AUTOMATIC` (→ `push`) resta da
+scrivere il client MQTT dell'app: connessione a `getMqttUrl()` con
+username/password salvate e will `LWT/{deviceId}="offline"` (+ publish
+`"online"` alla connect), subscribe di `ASK/{deviceId}`, e per ogni ASK una
+publish su `ANSWER/{deviceId}` con `{jti (riflesso), payload{lat,lon,accuracy,
+capturedAt}}`. Il jti è monouso con scadenza 30 s: rispondere subito e una
+volta sola. Riferimento lato piattaforma: `apps/master/src/mqtt/ask-answer.ts`
+e il simulatore `apps/device-simulator/src/push-device.ts` (stesso flusso in
+TypeScript).
+
 ## Stato e come procedere
 
 - ⚠️ **Questo branch non è stato compilato**: l'ambiente di sviluppo remoto non

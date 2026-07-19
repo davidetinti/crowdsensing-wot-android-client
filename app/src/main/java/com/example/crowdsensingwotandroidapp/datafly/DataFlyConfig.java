@@ -19,6 +19,10 @@ public final class DataFlyConfig {
 	private static final String KEY_ACCESS_TOKEN = "accessToken";
 	private static final String KEY_REFRESH_TOKEN = "refreshToken";
 	private static final String KEY_EMAIL = "email";
+	// M7: credenziali MQTT per-device consegnate dal Master alla registrazione
+	private static final String KEY_MQTT_URL = "mqttUrl";
+	private static final String KEY_MQTT_USERNAME = "mqttUsername";
+	private static final String KEY_MQTT_PASSWORD = "mqttPassword";
 
 	// Default di sviluppo: emulatore Android -> host (10.0.2.2)
 	private static final String DEFAULT_CORE_URL = "http://10.0.2.2:8080";
@@ -67,6 +71,32 @@ public final class DataFlyConfig {
 
 	public void saveEmail(String email) {
 		prefs.edit().putString(KEY_EMAIL, email).apply();
+	}
+
+	/**
+	 * M7 — canale push protetto: il Master ruota la password a ogni
+	 * registrazione, quindi questi valori vanno sovrascritti ogni volta.
+	 * Il client MQTT dell'app li usera' per ASK/{deviceId} e ANSWER/{deviceId}.
+	 */
+	public void saveMqttCredentials(String url, String username, String password) {
+		prefs.edit().putString(KEY_MQTT_URL, url).putString(KEY_MQTT_USERNAME, username)
+				.putString(KEY_MQTT_PASSWORD, password).apply();
+	}
+
+	public String getMqttUrl() {
+		return prefs.getString(KEY_MQTT_URL, null);
+	}
+
+	public String getMqttUsername() {
+		return prefs.getString(KEY_MQTT_USERNAME, null);
+	}
+
+	public String getMqttPassword() {
+		return prefs.getString(KEY_MQTT_PASSWORD, null);
+	}
+
+	public boolean hasMqttCredentials() {
+		return getMqttUrl() != null && getMqttUsername() != null && getMqttPassword() != null;
 	}
 
 	public boolean isLoggedIn() {
