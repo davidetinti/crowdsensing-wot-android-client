@@ -64,4 +64,13 @@
     <string name="campaign_history">Storico campagne completate</string>
     <string name="noAppliedCampaignAlertTitle">Non partecipi a nessuna campagna…</string>
     <string name="noAppliedCampaignAlertDesc">Vai nella sezione "Campagne" e partecipa a qualche campagna per cominciare.</string>
+    <string name="spot_title">Modalità spot</string>
+    <string name="spot_subtitle">Vendi singole letture on-demand dei tuoi sensori. Il prezzo lo decidi tu; i compratori vedono solo la tua affidabilità, mai la tua identità.</string>
+    <string name="spot_active">Annuncio attivo</string>
+    <string name="spot_price_hint">Prezzo per lettura (crediti)</string>
+    <string name="spot_save">Pubblica annuncio</string>
+    <string name="spot_stats_none">Nessun annuncio: imposta un prezzo e pubblica.</string>
+    <string name="spot_error_price">Inserisci un prezzo valido (es. 2,00)</string>
+    <string name="spot_saved">Annuncio pubblicato</string>
+    <string name="spot_stats_format">%1$d letture vendute · %2$.2f crediti guadagnati</string>
 </resources>

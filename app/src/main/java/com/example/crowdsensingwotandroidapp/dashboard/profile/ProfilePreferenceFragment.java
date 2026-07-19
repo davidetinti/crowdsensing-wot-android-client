@@ -54,5 +54,14 @@ public class ProfilePreferenceFragment extends PreferenceFragmentCompat {
 				return false;
 			});
 		}
+		// M8: vendita di letture on-demand (listing spot del device)
+		Preference profileSpot = findPreference("profileSpot");
+		if (profileSpot != null) {
+			profileSpot.setOnPreferenceClickListener(preference -> {
+				NavHostFragment.findNavController(this)
+						.navigate(R.id.action_profileFragment_to_spotFragment);
+				return false;
+			});
+		}
 	}
 }

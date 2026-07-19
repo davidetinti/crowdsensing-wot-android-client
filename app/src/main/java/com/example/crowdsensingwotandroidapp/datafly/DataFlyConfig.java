@@ -23,6 +23,8 @@ public final class DataFlyConfig {
 	private static final String KEY_MQTT_URL = "mqttUrl";
 	private static final String KEY_MQTT_USERNAME = "mqttUsername";
 	private static final String KEY_MQTT_PASSWORD = "mqttPassword";
+	// M8: chiave pubblica (SPKI PEM) dei token spot firmati dal Core
+	private static final String KEY_SPOT_TOKEN_KEY_PEM = "spotTokenKeyPem";
 
 	// Default di sviluppo: emulatore Android -> host (10.0.2.2)
 	private static final String DEFAULT_CORE_URL = "http://10.0.2.2:8080";
@@ -97,6 +99,19 @@ public final class DataFlyConfig {
 
 	public boolean hasMqttCredentials() {
 		return getMqttUrl() != null && getMqttUsername() != null && getMqttPassword() != null;
+	}
+
+	/**
+	 * M8 — chiave pubblica dei token spot (ES256): il device la usa per
+	 * accettare SOLO gli ASK spot davvero firmati dalla piattaforma.
+	 * Aggiornata a ogni registrazione (il Core puo' ruotarla).
+	 */
+	public void saveSpotTokenKey(String publicKeyPem) {
+		prefs.edit().putString(KEY_SPOT_TOKEN_KEY_PEM, publicKeyPem).apply();
+	}
+
+	public String getSpotTokenKeyPem() {
+		return prefs.getString(KEY_SPOT_TOKEN_KEY_PEM, null);
 	}
 
 	public boolean isLoggedIn() {

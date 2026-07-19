@@ -15,6 +15,10 @@
         app:key="profileCampaignHistory"
         app:title="@string/campaign_history" />
     <Preference
+        app:iconSpaceReserved="false"
+        app:key="profileSpot"
+        app:title="@string/spot_title" />
+    <Preference
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:iconSpaceReserved="false"

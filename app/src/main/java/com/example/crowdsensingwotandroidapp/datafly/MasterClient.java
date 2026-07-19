@@ -57,6 +57,15 @@ public class MasterClient {
 
 	// --- azioni tipizzate (input come da TD del Master) ---
 
+	/** Azione autenticata generica: {token, ...campi costruiti dal chiamante}. */
+	public JsonNode invokeAuthorized(String action, String token,
+			java.util.function.Consumer<ObjectNode> build) throws IOException {
+		ObjectNode input = mapper.createObjectNode();
+		input.put("token", token);
+		build.accept(input);
+		return invoke(action, input);
+	}
+
 	public JsonNode registerDevice(String token, JsonNode deviceTd) throws IOException {
 		ObjectNode input = mapper.createObjectNode();
 		input.put("token", token);

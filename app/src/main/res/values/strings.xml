@@ -79,4 +79,13 @@
     <string name="manualSendDataButtonText">Send data</string>
     <string name="noAppliedCampaignAlertTitle">You don\'t participate in any campaign…</string>
     <string name="noAppliedCampaignAlertDesc">Move to the "Campaigns" section and participate in some campaign to start.</string>
+    <string name="spot_title">Spot mode</string>
+    <string name="spot_subtitle">Sell single on-demand readings of your sensors. You decide the price; buyers see only your reliability, never your identity.</string>
+    <string name="spot_active">Listing active</string>
+    <string name="spot_price_hint">Price per reading (credits)</string>
+    <string name="spot_save">Publish listing</string>
+    <string name="spot_stats_none">No listing yet: set a price and publish.</string>
+    <string name="spot_error_price">Enter a valid price (e.g. 2.00)</string>
+    <string name="spot_saved">Listing published</string>
+    <string name="spot_stats_format">%1$d readings sold · %2$.2f credits earned</string>
 </resources>

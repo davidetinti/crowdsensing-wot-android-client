@@ -83,6 +83,29 @@ senza alcun invio manuale; in `adb logcat -s DataFlyPush` si vedono
 `ASK ricevuto → ANSWER inviata`. Nota emulatore: il default
 `MQTT_PUBLIC_URL=mqtt://10.0.2.2:1883` è già corretto.
 
+## Spot mode M8 (agganciato)
+
+Il worker vende **letture on-demand** dei propri sensori:
+
+- **Schermata Spot** (Profilo → *Modalità spot*): prezzo per lettura,
+  pubblicazione/pausa dell'annuncio, statistiche (letture vendute e crediti
+  guadagnati — il netto entra in wallet come per le campagne). Nel pilota la
+  spec esposta è `core/location`.
+- **Verifica della firma degli ASK spot**: alla registrazione il device riceve
+  anche la **chiave pubblica ES256** dei token spot (`tokenKey` nella risposta,
+  salvata in `DataFlyConfig`). `PushChannel` risponde a un ASK `kind:"spot"`
+  **solo se** `SpotTokenVerifier` valida il JWT trasportato: firma ECDSA P-256
+  (conversione JOSE r‖s → DER inclusa, `java.security` puro), `aud` = questo
+  device, `jti` identico a quello dell'ASK, non scaduto. Un broker
+  compromesso non può far vendere una lettura: senza token firmato dal Core il
+  device tace, e senza jti giusto il Core non paga comunque.
+- Layer datafly: `upsertSpotListing`/`setSpotListing`/`listSpotListings`
+  (azioni WoT del Master, autenticate col JWT worker).
+
+Smoke: attiva lo spot dall'app (es. 2 crediti), poi dalla webapp (pagina
+**Spot**) cerca `core/location` e compra: in pochi secondi l'ordine è
+*Consegnato* col fix del telefono e i guadagni salgono nella schermata Spot.
+
 ## Stato e come procedere
 
 - ⚠️ **Questo branch non è stato compilato**: l'ambiente di sviluppo remoto non

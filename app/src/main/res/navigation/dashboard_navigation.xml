@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_profileFragment_to_historyPreferenceFragment"
             app:destination="@id/historyPreferenceFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_spotFragment"
+            app:destination="@id/spotFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -192,4 +195,9 @@
             app:destination="@id/campaignsFragment"
             app:popUpTo="@id/campaignsFragment" />
     </dialog>
+    <fragment
+        android:id="@+id/spotFragment"
+        android:name="com.example.crowdsensingwotandroidapp.dashboard.profile.spot.SpotFragment"
+        android:label="@string/spot_title"
+        tools:layout="@layout/fragment_spot" />
 </navigation>

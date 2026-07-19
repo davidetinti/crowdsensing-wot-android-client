@@ -159,6 +159,20 @@ public class PushChannel {
 				Log.w(TAG, "ASK senza jti: ignorato");
 				return;
 			}
+			// M8: gli ASK spot portano un token ES256 firmato dal Core — si
+			// risponde SOLO se la firma verifica con la chiave pubblica
+			// ricevuta alla registrazione (aud = questo device, jti riflesso,
+			// non scaduto). Un ASK spot senza token o con token invalido cade:
+			// anche un broker compromesso non puo' farci vendere una lettura.
+			if ("spot".equals(ask.path("kind").asText())) {
+				String token = ask.path("token").asText(null);
+				String publicKeyPem = config.getSpotTokenKeyPem();
+				if (token == null || publicKeyPem == null
+						|| !SpotTokenVerifier.verify(token, publicKeyPem, deviceId, jti)) {
+					Log.w(TAG, "ASK spot con token assente o non verificato: ignorato");
+					return;
+				}
+			}
 			Location fix = fixProvider.currentFix();
 			if (fix == null) {
 				// niente fix ⇒ niente ANSWER: il jti scade da solo lato Master

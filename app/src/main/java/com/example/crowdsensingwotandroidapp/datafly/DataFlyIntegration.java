@@ -84,7 +84,41 @@ public class DataFlyIntegration {
 			config.saveMqttCredentials(mqtt.get("url").asText(),
 					mqtt.get("username").asText(), mqtt.get("password").asText());
 		}
+		// M8: chiave pubblica dei token spot — serve a PushChannel per
+		// verificare la firma degli ASK spot (SpotTokenVerifier).
+		JsonNode tokenKey = result.get("tokenKey");
+		if (tokenKey != null && tokenKey.hasNonNull("publicKeyPem")) {
+			config.saveSpotTokenKey(tokenKey.get("publicKeyPem").asText());
+		}
 		return result.get("capabilities");
+	}
+
+	// --- Spot mode (M8): il worker vende letture on-demand ---
+
+	/** Crea/aggiorna il listing spot del device (e lo riattiva se in pausa). */
+	public JsonNode upsertSpotListing(String specKey, int priceCents) throws IOException {
+		JsonNode result = master.invokeAuthorized("upsertSpotListing", freshToken(),
+				body -> body.put("deviceId", deviceId()).put("specKey", specKey)
+						.put("priceCents", priceCents));
+		requireOk(result, "upsertSpotListing");
+		return result;
+	}
+
+	/** Attiva o mette in pausa il listing spot. */
+	public JsonNode setSpotListing(String specKey, boolean active) throws IOException {
+		JsonNode result = master.invokeAuthorized("setSpotListing", freshToken(),
+				body -> body.put("deviceId", deviceId()).put("specKey", specKey)
+						.put("active", active));
+		requireOk(result, "setSpotListing");
+		return result;
+	}
+
+	/** I listing del worker con statistiche (letture vendute, guadagni). */
+	public JsonNode listSpotListings() throws IOException {
+		JsonNode result = master.invokeAuthorized("listSpotListings", freshToken(), body -> {
+		});
+		requireOk(result, "listSpotListings");
+		return result.get("listings");
 	}
 
 	/** Campagne compatibili con questo device nella posizione data (opzionale). */
