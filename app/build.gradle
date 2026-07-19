@@ -56,6 +56,9 @@ dependencies {
     // Library
     implementation project(path: ':wot-servient')
 
+    // Data Fly M7: canale push protetto (client MQTT con credenziali per-device)
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
+
     // Needed tu use Config class
     implementation 'com.typesafe:config:1.4.1'
 

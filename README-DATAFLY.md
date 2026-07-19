@@ -56,20 +56,32 @@ vecchio resta valido) e `CampaignManualSendDialog` la valorizza dal fix GPS.
 Il vecchio stack wot-servient (esposizione MQTT del device, TDD diretta) non è
 più nel percorso critico: si riaggancia in **M7** con credenziali per-device.
 
-## Canale push M7 (piattaforma pronta, client da cablare)
+## Canale push M7 (cablato)
 
-Dalla M7 della piattaforma, `registerDevice` restituisce anche le
-**credenziali MQTT per-device** (broker dynsec, ACL deny-default): il layer le
-salva già in `DataFlyConfig` (`saveMqttCredentials`, ruotate a ogni
-registrazione). Per attivare la modalità `AUTOMATIC` (→ `push`) resta da
-scrivere il client MQTT dell'app: connessione a `getMqttUrl()` con
-username/password salvate e will `LWT/{deviceId}="offline"` (+ publish
-`"online"` alla connect), subscribe di `ASK/{deviceId}`, e per ogni ASK una
-publish su `ANSWER/{deviceId}` con `{jti (riflesso), payload{lat,lon,accuracy,
-capturedAt}}`. Il jti è monouso con scadenza 30 s: rispondere subito e una
-volta sola. Riferimento lato piattaforma: `apps/master/src/mqtt/ask-answer.ts`
-e il simulatore `apps/device-simulator/src/push-device.ts` (stesso flusso in
-TypeScript).
+La modalità `AUTOMATIC` (→ `push`) è attiva: **`PushChannel`** (package
+`datafly`, client Paho `mqttv3` aggiunto all'app) si connette al broker dynsec
+con le credenziali per-device consegnate da `registerDevice` (salvate in
+`DataFlyConfig`, ruotate a ogni registrazione), imposta il will
+`LWT/{deviceId}="offline"` e pubblica `"online"` a ogni (ri)connessione,
+sottoscrive `ASK/{deviceId}` e risponde su `ANSWER/{deviceId}` riflettendo il
+`jti` (monouso, TTL ~30 s) con il fix corrente
+(`{lat, lon, accuracy, capturedAt}` da `getCurrentLocation`, età max 10 s).
+Gli ASK sono processati su un executor dedicato (mai bloccare il thread di
+callback Paho); la riconnessione è automatica.
+
+Ciclo di vita in `ServientService`: il canale (ri)parte dopo ogni
+`registerDevice` — la password ruota e la vecchia sessione viene disconnessa
+dal broker, quindi si ricrea con le credenziali fresche — viene ritentato al
+join `AUTOMATIC` se il primo avvio era fallito, e si spegne al logout con un
+`"offline"` esplicito. Se il broker non fornisce credenziali (dev senza
+dynsec) l'app resta in sola modalità pull, con un log.
+
+Smoke push (stack `docker compose up` + campagna con modalità push):
+login nell'app → join di una campagna in modalità **Automatica** → entro
+~10 s (scheduler del Master) i contatori della campagna salgono nella webapp
+senza alcun invio manuale; in `adb logcat -s DataFlyPush` si vedono
+`ASK ricevuto → ANSWER inviata`. Nota emulatore: il default
+`MQTT_PUBLIC_URL=mqtt://10.0.2.2:1883` è già corretto.
 
 ## Stato e come procedere
 

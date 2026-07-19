@@ -20,6 +20,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.Observer;
 
 import com.example.crowdsensingwotandroidapp.datafly.DataFlyIntegration;
+import com.example.crowdsensingwotandroidapp.datafly.PushChannel;
 import com.example.crowdsensingwotandroidapp.utils.User;
 import com.example.crowdsensingwotandroidapp.utils.campaign.Campaign;
 import com.example.crowdsensingwotandroidapp.utils.campaign.SubmissionMode;
@@ -27,6 +28,7 @@ import com.example.crowdsensingwotandroidapp.utils.campaign.submission.DataSubmi
 import com.example.crowdsensingwotandroidapp.utils.campaign.submission.LocationSubmission;
 import com.example.crowdsensingwotandroidapp.utils.network.NetworkStateManager;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.android.gms.location.CurrentLocationRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Tasks;
@@ -48,8 +50,9 @@ import java.util.concurrent.TimeUnit;
  * foreground service restano identiche: cambia solo cosa c'e' dietro.
  * Le azioni della vecchia Dashboard sono sostituite dal layer
  * {@link DataFlyIntegration} (Core per identita'/wallet, Master per il flusso
- * WoT: registerDevice/listCampaigns/join/submit/ping). L'esposizione del
- * servient MQTT del device tornera' in M7 con il canale push protetto.
+ * WoT: registerDevice/listCampaigns/join/submit/ping). Il canale push M7 e'
+ * attivo: {@link PushChannel} risponde agli ASK del Master sul broker dynsec
+ * con le credenziali per-device ricevute alla registrazione.
  *
  * Nota di compatibilita': il "bearer" che la UI passa e usa come namespace
  * delle SharedPreferences ora e' l'email dell'utente (stabile tra sessioni,
@@ -73,6 +76,8 @@ public class ServientService extends Service {
 	private static TimerTask pingTask;
 	// Facade towards Data Fly (Core + Master)
 	private static DataFlyIntegration integration;
+	// M7: canale push protetto (ASK/ANSWER via MQTT con credenziali per-device)
+	private static PushChannel pushChannel;
 
 	public ServientService() {
 	}
@@ -82,26 +87,33 @@ public class ServientService extends Service {
 		// Consumo subito la TD del Master: se non e' raggiungibile l'init
 		// fallisce, come falliva la fetch della dashboard nella tesi.
 		integration.master().consume();
+		ServientService self = this;
 		Observer<Boolean> connectivityObserver = connected -> {
-			MainViewModel.addLoading();
 			if (connected) {
-				if (instance == null) {
+				if (instance != null)
+					return;
+				MainViewModel.addLoading();
+				// l'observer gira sul main thread: la rete (HTTP + MQTT) va fuori
+				CompletableFuture.runAsync(() -> {
 					try {
 						integration.master().consume();
 						if (integration.config().isLoggedIn()) {
 							integration.registerDevice();
 							startPingTask();
+							// la registrazione ruota le credenziali MQTT ⇒ ricrea
+							restartPushChannel();
 						}
-						instance = this;
+						instance = self;
 					} catch (IOException e) {
 						Log.w(TAG, "riconnessione al Master fallita", e);
 					}
-				}
+				}).whenComplete((unused, err) -> new Handler(Looper.getMainLooper())
+						.post(MainViewModel::removeLoading));
 			} else {
 				instance = null;
 				stopPingTask();
+				// il canale push si riconnette da solo (Paho automaticReconnect)
 			}
-			MainViewModel.removeLoading();
 		};
 		new Handler(Looper.getMainLooper()).post(() -> NetworkStateManager.getInstance()
 				.getNetworkConnectivityStatus().observeForever(connectivityObserver));
@@ -210,6 +222,9 @@ public class ServientService extends Service {
 				integration.config().saveEmail(email);
 				integration.registerDevice();
 				startPingTask();
+				// M7: le credenziali MQTT appena consegnate accendono il canale
+				// push (best effort: senza, l'app resta in sola modalita' pull)
+				restartPushChannel();
 				return email;
 			} catch (IOException e) {
 				throw new CompletionException(new Exception(e.getMessage()));
@@ -279,7 +294,13 @@ public class ServientService extends Service {
 			try {
 				JsonNode result = integration.master().joinCampaign(integration.freshToken(),
 						integration.deviceId(), campaign.getId(), toDataFlyMode(mode));
-				return toLegacyEnvelope(result);
+				HashMap<String, Object> envelope = toLegacyEnvelope(result);
+				// M7: adesione push riuscita ⇒ il canale deve essere su (se il
+				// primo avvio era fallito, qui si ritenta)
+				if (mode == SubmissionMode.AUTOMATIC && Boolean.TRUE.equals(envelope.get("ok"))) {
+					startPushChannel();
+				}
+				return envelope;
 			} catch (IOException e) {
 				return failureEnvelope(e);
 			}
@@ -342,10 +363,11 @@ public class ServientService extends Service {
 		});
 	}
 
-	/** Logout: ferma il ping e revoca il refresh token sul Core (best effort). */
+	/** Logout: ferma ping e canale push, revoca il refresh token (best effort). */
 	public CompletableFuture<Void> logout() {
 		return CompletableFuture.runAsync(() -> {
 			stopPingTask();
+			stopPushChannel();
 			if (integration != null)
 				integration.core().logout();
 		});
@@ -373,6 +395,56 @@ public class ServientService extends Service {
 		if (pingTask != null) {
 			pingTask.cancel();
 			pingTask = null;
+		}
+	}
+
+	/**
+	 * Avvia il canale push se le credenziali ci sono e non e' gia' connesso.
+	 * Best effort: un fallimento qui non tocca il flusso pull (log e avanti).
+	 */
+	private static void startPushChannel() {
+		if (integration == null || !integration.config().hasMqttCredentials())
+			return;
+		try {
+			if (pushChannel == null) {
+				pushChannel = new PushChannel(integration.config(), integration.deviceId(),
+						ServientService::currentFixBlocking);
+			}
+			pushChannel.start();
+		} catch (Exception e) {
+			Log.w(TAG, "canale push non avviato (l'app resta in modalita' pull)", e);
+		}
+	}
+
+	/**
+	 * Dopo OGNI registerDevice: il provisioning ruota la password e disconnette
+	 * la vecchia sessione, quindi il canale va ricreato con le credenziali nuove
+	 * (una start() sul client vecchio riproverebbe per sempre quelle stantie).
+	 */
+	private static void restartPushChannel() {
+		stopPushChannel();
+		startPushChannel();
+	}
+
+	private static void stopPushChannel() {
+		if (pushChannel != null) {
+			pushChannel.stop();
+			pushChannel = null;
+		}
+	}
+
+	/**
+	 * Fix corrente per le risposte ASK (bloccante, gira sull'executor del
+	 * canale push): fresco al massimo di 10s, timeout entro il TTL del jti.
+	 */
+	@SuppressLint("MissingPermission")
+	private static Location currentFixBlocking() {
+		try {
+			return Tasks.await(fusedLocationClient.getCurrentLocation(
+					new CurrentLocationRequest.Builder().setMaxUpdateAgeMillis(10_000).build(),
+					null), 10, TimeUnit.SECONDS);
+		} catch (Exception e) {
+			return null;
 		}
 	}
 
