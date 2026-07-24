@@ -164,6 +164,12 @@ public class PushChannel {
 			// ricevuta alla registrazione (aud = questo device, jti riflesso,
 			// non scaduto). Un ASK spot senza token o con token invalido cade:
 			// anche un broker compromesso non puo' farci vendere una lettura.
+			// M10 (pool di Master): l'ANSWER riflette anche il CONTESTO —
+			// l'orderId (dai claim del token verificato) per gli spot, il
+			// campaignId per le campagne — cosi' qualunque Master del gruppo
+			// in shared subscription puo' instradarla senza stato locale.
+			String spotOrderId = null;
+			String campaignId = ask.path("campaignId").asText(null);
 			if ("spot".equals(ask.path("kind").asText())) {
 				String token = ask.path("token").asText(null);
 				String publicKeyPem = config.getSpotTokenKeyPem();
@@ -172,6 +178,7 @@ public class PushChannel {
 					Log.w(TAG, "ASK spot con token assente o non verificato: ignorato");
 					return;
 				}
+				spotOrderId = SpotTokenVerifier.orderId(token);
 			}
 			Location fix = fixProvider.currentFix();
 			if (fix == null) {
@@ -187,6 +194,12 @@ public class PushChannel {
 					.format(fixTime > 0 ? Instant.ofEpochMilli(fixTime) : Instant.now()));
 			ObjectNode answer = mapper.createObjectNode();
 			answer.put("jti", jti);
+			if (spotOrderId != null) {
+				answer.put("kind", "spot");
+				answer.put("orderId", spotOrderId);
+			} else if (campaignId != null) {
+				answer.put("campaignId", campaignId);
+			}
 			answer.set("payload", payload);
 			MqttClient current;
 			synchronized (this) {

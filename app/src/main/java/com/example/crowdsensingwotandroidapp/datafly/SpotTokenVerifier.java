@@ -90,6 +90,23 @@ public final class SpotTokenVerifier {
 		}
 	}
 
+	/**
+	 * Claim {@code orderId} del token (M10, pool di Master): riflesso
+	 * nell'ANSWER cosi' qualunque Master del gruppo — anche uno diverso da chi
+	 * ha inviato l'ASK — puo' instradare la consegna senza stato locale.
+	 * Da chiamare solo DOPO {@link #verify}: qui non si riverifica la firma.
+	 */
+	public static String orderId(String token) {
+		try {
+			String[] parts = token.split("\\.");
+			JsonNode claims = MAPPER.readTree(Base64.decode(parts[1], Base64.URL_SAFE));
+			String orderId = claims.path("orderId").asText(null);
+			return orderId != null && !orderId.isEmpty() ? orderId : null;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	private static PublicKey parsePublicKey(String pem) throws Exception {
 		String base64 = pem.replace("-----BEGIN PUBLIC KEY-----", "")
 				.replace("-----END PUBLIC KEY-----", "").replaceAll("\\s", "");

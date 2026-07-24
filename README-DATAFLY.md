@@ -106,6 +106,18 @@ Smoke: attiva lo spot dall'app (es. 2 crediti), poi dalla webapp (pagina
 **Spot**) cerca `core/location` e compra: in pochi secondi l'ordine è
 *Consegnato* col fix del telefono e i guadagni salgono nella schermata Spot.
 
+## Pool di Master M10 (echo del contesto)
+
+Con più Master in **shared subscription** MQTT 5 la risposta del device può
+arrivare a un Master DIVERSO da quello che ha inviato l'ASK. Per questo
+`PushChannel` riflette nell'ANSWER, oltre al `jti`, anche il **contesto**:
+`campaignId` per gli ASK di campagna, `kind:"spot"` + `orderId` (estratto dai
+claim del token ES256 già verificato) per gli spot. Qualunque Master del
+gruppo instrada così la risposta senza stato locale; le garanzie restano sul
+Core (identità dal topic con ACL, jti dell'ordine per gli spot, dedup +
+settlement idempotente per le campagne). Compatibile all'indietro: con un
+solo Master il vecchio percorso a `jti` continua a funzionare.
+
 ## Attestazione device M9 (passo di deploy)
 
 Da M9 l'azione `registerDevice` del Master accetta un campo opzionale
