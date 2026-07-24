@@ -106,6 +106,28 @@ Smoke: attiva lo spot dall'app (es. 2 crediti), poi dalla webapp (pagina
 **Spot**) cerca `core/location` e compra: in pochi secondi l'ordine è
 *Consegnato* col fix del telefono e i guadagni salgono nella schermata Spot.
 
+## Attestazione device M9 (passo di deploy)
+
+Da M9 l'azione `registerDevice` del Master accetta un campo opzionale
+`integrityToken`: il Core lo verifica server-side e il verdetto diventa la
+componente **A** dello score (strong=1 … fail=0). Oggi l'app **non** lo invia:
+il device risulta `unattested` (A=0, decisione di prodotto #7) — partecipa
+comunque, con score massimo ridotto e maggiore probabilità di finire in
+quarantena sui pattern sospetti. Per attivare l'attestazione reale servono
+passi fuori dal codice di questo branch:
+
+1. progetto Google Cloud con **Play Integrity API** abilitata e app
+   pubblicata su Play (anche internal testing);
+2. dipendenza `com.google.android.play:integrity`, richiesta del token
+   (`IntegrityManager.requestIntegrityToken`) prima della registrazione e
+   passaggio del token a `registerDevice` (un parametro in più in
+   `DataFlyIntegration.registerDevice` → `MasterClient`);
+3. lato piattaforma, il verificatore Play Integrity al posto dello stub
+   (`ATTESTATION_MODE`, interfaccia `AttestationVerifier` già pronta).
+
+In dev si può provare la catena col Core in `ATTESTATION_MODE=stub`
+passando un token fittizio `stub:strong|device|basic`.
+
 ## Stato e come procedere
 
 - ⚠️ **Questo branch non è stato compilato**: l'ambiente di sviluppo remoto non
