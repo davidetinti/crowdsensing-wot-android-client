@@ -1,0 +1,47 @@
+name: CrowdsensingWoT
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+
+packages:
+  CocoaMQTT:
+    url: https://github.com/emqx/CocoaMQTT
+    from: "2.1.6"
+
+targets:
+  CrowdsensingWoT:
+    type: application
+    platform: iOS
+    sources:
+      - CrowdsensingWoT
+    dependencies:
+      - package: CocoaMQTT
+    info:
+      path: CrowdsensingWoT/Info.plist
+      properties:
+        CFBundleDisplayName: Crowdsensing WoT
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSLocationWhenInUseUsageDescription: >-
+          La posizione è necessaria per partecipare alle campagne di
+          crowdsensing basate sulla localizzazione.
+        NSLocationAlwaysAndWhenInUseUsageDescription: >-
+          L'accesso continuo alla posizione permette di inviare i dati delle
+          campagne anche quando l'app è in background.
+        UIBackgroundModes:
+          - location
+        # Il backend della tesi è raggiungibile solo in HTTP (nessun TLS),
+        # quindi è necessario disabilitare App Transport Security.
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.crowdsensingwotios
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_VERSION: "5.7"
+        CODE_SIGN_STYLE: Automatic
