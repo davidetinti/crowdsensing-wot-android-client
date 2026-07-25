@@ -38,19 +38,29 @@ final class MQTTExposureServer: NSObject {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             queue.sync { connectContinuations.append(continuation) }
             if !client.connect() {
-                queue.sync {
-                    connectContinuations.removeAll()
-                }
-                continuation.resume(throwing: WoTError.notConnected)
+                // Drena e fallisce tutte le attese in corso, ognuna una volta sola.
+                let pending = drainConnectContinuations()
+                pending.forEach { $0.resume(throwing: WoTError.notConnected) }
             }
         }
     }
 
     func disconnect() {
+        // Stacca il delegate prima di chiudere: i callback del vecchio client
+        // non devono interferire con una nuova connessione.
+        mqtt?.delegate = nil
         mqtt?.autoReconnect = false
         mqtt?.disconnect()
         mqtt = nil
         exposedThing = nil
+    }
+
+    private func drainConnectContinuations() -> [CheckedContinuation<Void, Error>] {
+        queue.sync {
+            let pending = connectContinuations
+            connectContinuations = []
+            return pending
+        }
     }
 
     /// Espone (o ri-espone) la Thing: sottoscrive i topic `readAsk` di tutte
@@ -102,7 +112,12 @@ final class MQTTExposureServer: NSObject {
         guard let property = thing.properties[name] else { return }
         let answerTopic = "\(thing.id)/properties/\(name)/readAnswer"
         Task { [weak self] in
-            let value = await property.supplier?()
+            let value: Any?
+            if let supplier = property.supplier {
+                value = await supplier()
+            } else {
+                value = nil
+            }
             let payload = Self.encodeJSON(value)
             self?.publish(topic: answerTopic, payload: payload)
         }
@@ -127,11 +142,8 @@ final class MQTTExposureServer: NSObject {
 
 extension MQTTExposureServer: CocoaMQTTDelegate {
     func mqtt(_ mqtt: CocoaMQTT, didConnectAck ack: CocoaMQTTConnAck) {
-        let continuations = queue.sync { () -> [CheckedContinuation<Void, Error>] in
-            let pending = connectContinuations
-            connectContinuations = []
-            return pending
-        }
+        guard mqtt === self.mqtt else { return }
+        let continuations = drainConnectContinuations()
         if ack == .accept {
             // Dopo una riconnessione automatica ripristina le sottoscrizioni.
             if let thing = exposedThing {
@@ -146,15 +158,13 @@ extension MQTTExposureServer: CocoaMQTTDelegate {
     }
 
     func mqtt(_ mqtt: CocoaMQTT, didReceiveMessage message: CocoaMQTTMessage, id: UInt16) {
+        guard mqtt === self.mqtt else { return }
         handleReadAsk(topic: message.topic)
     }
 
     func mqttDidDisconnect(_ mqtt: CocoaMQTT, withError err: Error?) {
-        let continuations = queue.sync { () -> [CheckedContinuation<Void, Error>] in
-            let pending = connectContinuations
-            connectContinuations = []
-            return pending
-        }
+        guard mqtt === self.mqtt else { return }
+        let continuations = drainConnectContinuations()
         continuations.forEach { $0.resume(throwing: err ?? WoTError.notConnected) }
     }
 

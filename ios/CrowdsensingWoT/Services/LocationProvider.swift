@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import CoreLocation
 
 /// Wrapper di CLLocationManager, controparte del FusedLocationProviderClient
@@ -12,7 +13,7 @@ final class LocationProvider: NSObject, ObservableObject, CLLocationManagerDeleg
     @Published private(set) var lastLocation: CLLocation?
     @Published private(set) var authorizationStatus: CLAuthorizationStatus = .notDetermined
 
-    private var pendingRequests: [CheckedContinuation<CLLocation, Error>] = []
+    private var pendingRequests: [UUID: CheckedContinuation<CLLocation, Error>] = [:]
     private let lock = NSLock()
 
     enum LocationError: LocalizedError {
@@ -69,19 +70,28 @@ final class LocationProvider: NSObject, ObservableObject, CLLocationManagerDeleg
     }
 
     /// Restituisce la posizione corrente: se l'ultima nota è recente (< 10 s)
-    /// la riusa, altrimenti attende il prossimo aggiornamento
+    /// la riusa, altrimenti attende il prossimo aggiornamento continuo
     /// (equivalente di `getCurrentLocation` con maxUpdateAge=0 su Android,
     /// con una piccola tolleranza per non bloccare le letture pull).
-    func currentLocation(maxAge: TimeInterval = 10) async throws -> CLLocation {
+    /// Un timeout evita di lasciare in sospeso per sempre la risposta a una
+    /// lettura pull se CoreLocation non produce aggiornamenti.
+    func currentLocation(maxAge: TimeInterval = 10, timeout: TimeInterval = 8) async throws -> CLLocation {
         guard isAuthorized else { throw LocationError.notAuthorized }
         if let last = lastLocation, -last.timestamp.timeIntervalSinceNow < maxAge {
             return last
         }
-        manager.requestLocation()
+        let requestId = UUID()
         return try await withCheckedThrowingContinuation { continuation in
             lock.lock()
-            pendingRequests.append(continuation)
+            pendingRequests[requestId] = continuation
             lock.unlock()
+            DispatchQueue.global().asyncAfter(deadline: .now() + timeout) { [weak self] in
+                guard let self else { return }
+                self.lock.lock()
+                let expired = self.pendingRequests.removeValue(forKey: requestId)
+                self.lock.unlock()
+                expired?.resume(throwing: LocationError.unavailable)
+            }
         }
     }
 
@@ -118,16 +128,16 @@ final class LocationProvider: NSObject, ObservableObject, CLLocationManagerDeleg
         guard let location = locations.last else { return }
         lastLocation = location
         lock.lock()
-        let pending = pendingRequests
-        pendingRequests = []
+        let pending = pendingRequests.values
+        pendingRequests = [:]
         lock.unlock()
         pending.forEach { $0.resume(returning: location) }
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         lock.lock()
-        let pending = pendingRequests
-        pendingRequests = []
+        let pending = pendingRequests.values
+        pendingRequests = [:]
         lock.unlock()
         pending.forEach { $0.resume(throwing: error) }
     }

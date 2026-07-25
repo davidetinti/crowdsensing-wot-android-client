@@ -99,7 +99,7 @@ struct JoinedCampaignDetailView: View {
     }
 
     private func sendManualData() {
-        Task {
+        Task { @MainActor in
             if let remaining = await viewModel.sendManualData(for: applied) {
                 remainingSubmissions = remaining
                 showSendSuccess = true

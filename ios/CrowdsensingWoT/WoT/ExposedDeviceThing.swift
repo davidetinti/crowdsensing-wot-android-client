@@ -9,12 +9,19 @@ typealias PropertyValueSupplier = () async -> Any?
 /// costruita in `ServientService.java`).
 final class ExposedDeviceThing {
     let id: String
-    private(set) var properties: [String: DeviceProperty] = [:]
+    // Le property sono lette dalla coda del client MQTT (readAsk in arrivo)
+    // e modificate dall'actor ServientService: l'accesso è protetto da lock.
+    private var storedProperties: [String: DeviceProperty] = [:]
+    private let lock = NSLock()
 
     struct DeviceProperty {
         let name: String
         let type: String?
         let supplier: PropertyValueSupplier?
+    }
+
+    var properties: [String: DeviceProperty] {
+        lock.withLock { storedProperties }
     }
 
     init(id: String) {
@@ -24,11 +31,15 @@ final class ExposedDeviceThing {
     }
 
     func addProperty(name: String, type: String?, supplier: PropertyValueSupplier?) {
-        properties[name] = DeviceProperty(name: name, type: type, supplier: supplier)
+        lock.withLock {
+            storedProperties[name] = DeviceProperty(name: name, type: type, supplier: supplier)
+        }
     }
 
     func removeProperty(name: String) {
-        properties.removeValue(forKey: name)
+        _ = lock.withLock {
+            storedProperties.removeValue(forKey: name)
+        }
     }
 
     /// Costruisce la Thing Description del dispositivo con i form MQTT

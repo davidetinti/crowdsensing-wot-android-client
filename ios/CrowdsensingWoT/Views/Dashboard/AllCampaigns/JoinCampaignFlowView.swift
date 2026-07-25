@@ -175,7 +175,7 @@ struct JoinCampaignFlowView: View {
 
     private func confirm() {
         guard let mode = selectedMode else { return }
-        Task {
+        Task { @MainActor in
             let joined = await viewModel.applyToCampaign(
                 campaign,
                 mode: mode,
