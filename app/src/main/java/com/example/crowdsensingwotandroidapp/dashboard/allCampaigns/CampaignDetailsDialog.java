@@ -75,6 +75,19 @@ public class CampaignDetailsDialog extends DialogFragment {
 			case "gps":
 				sensorText += "\u2022 " + getString(R.string.campaignDetailsRequiredGPS);
 				break;
+			case "battery":
+				sensorText += "\u2022 Livello di batteria";
+				break;
+			case "pressure":
+				sensorText += "\u2022 Barometro (pressione)";
+				break;
+			case "motion":
+				sensorText += "\u2022 Accelerometro (movimento)";
+				break;
+			default:
+				if (campaign.getDataSchema() != null)
+					sensorText += "\u2022 Dati inseriti manualmente";
+				break;
 		}
 		binding.campaignDetailsSensor.setText(sensorText);
 		String intervalText = getString(R.string.campaignDetailsInterval) + " " + dashboardViewModel.calculateTimeString(campaign.getIdealSubmissionInterval()) + ".";
@@ -84,7 +97,7 @@ public class CampaignDetailsDialog extends DialogFragment {
 		String pointsText = getString(R.string.campaignDetailsPoints) + " " + campaign.getPoints() + " " + getString(R.string.points) + " CRWSNS.";
 		binding.campaignDetailsPoints.setText(pointsText);
 		// Button
-		if (dashboardViewModel.verifyDeviceCapability(campaign.getType())) {
+		if (dashboardViewModel.verifyDeviceCapability(campaign)) {
 			if (dashboardViewModel.verifyPermission(campaign.getType())) {
 				binding.campaignDetailsActionButton.setText(R.string.participateButtonText);
 				binding.campaignDetailsActionButton.setBackgroundColor(Color.parseColor("#254B5B"));
@@ -99,6 +112,7 @@ public class CampaignDetailsDialog extends DialogFragment {
 					ArrayList<String> permissions = new ArrayList<>();
 					switch (campaign.getType()) {
 						case "location":
+						case "gps":
 							permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
 							permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
 							break;

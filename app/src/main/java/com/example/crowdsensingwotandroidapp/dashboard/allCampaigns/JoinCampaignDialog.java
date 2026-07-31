@@ -16,6 +16,7 @@ import com.example.crowdsensingwotandroidapp.utils.campaign.Campaign;
 import com.example.crowdsensingwotandroidapp.dashboard.DashboardViewModel;
 import com.example.crowdsensingwotandroidapp.databinding.DialogJoinCampaignBinding;
 import com.example.crowdsensingwotandroidapp.utils.campaign.SubmissionMode;
+import com.example.crowdsensingwotandroidapp.utils.sensors.SensorRegistry;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class JoinCampaignDialog extends DialogFragment {
@@ -55,16 +56,22 @@ public class JoinCampaignDialog extends DialogFragment {
 						binding.intervalLabel.setText(dashboardViewModel.calculateTimeString(interval));
 					}
 				});
-		binding.autoBtn.setEnabled(campaign.getPullEnabled());
-		binding.autoRadioBtn.setEnabled(campaign.getPullEnabled());
+		// Le modalità automatiche richiedono un sensore per il tipo della
+		// campagna; quella manuale un sensore oppure un data_schema.
+		boolean hasSensor = SensorRegistry.sensorForType(requireContext(), campaign.getType()) != null;
+		boolean autoEnabled = campaign.getPullEnabled() && hasSensor;
+		boolean autoPrefEnabled = campaign.getPushAutoEnabled() && hasSensor;
+		boolean manualEnabled = campaign.getPushInputEnabled() && (hasSensor || campaign.getDataSchema() != null);
+		binding.autoBtn.setEnabled(autoEnabled);
+		binding.autoRadioBtn.setEnabled(autoEnabled);
 		binding.autoBtn.setOnClickListener(v -> dashboardViewModel.getApplicationSelectedSubmissionMode()
 				.setValue(SubmissionMode.AUTOMATIC));
-		binding.autoPrefBtn.setEnabled(campaign.getPushAutoEnabled());
-		binding.autoPrefRadioBtn.setEnabled(campaign.getPushAutoEnabled());
+		binding.autoPrefBtn.setEnabled(autoPrefEnabled);
+		binding.autoPrefRadioBtn.setEnabled(autoPrefEnabled);
 		binding.autoPrefBtn.setOnClickListener(v -> dashboardViewModel.getApplicationSelectedSubmissionMode()
 				.setValue(SubmissionMode.AUTO_WITH_PREF));
-		binding.manualBtn.setEnabled(campaign.getPushInputEnabled());
-		binding.manualRadioBtn.setEnabled(campaign.getPushInputEnabled());
+		binding.manualBtn.setEnabled(manualEnabled);
+		binding.manualRadioBtn.setEnabled(manualEnabled);
 		binding.manualBtn.setOnClickListener(v -> dashboardViewModel.getApplicationSelectedSubmissionMode()
 				.setValue(SubmissionMode.MANUAL));
 		binding.intervalBtn.setOnClickListener(v -> {

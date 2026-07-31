@@ -2,6 +2,7 @@ package com.example.crowdsensingwotandroidapp.utils.campaign;
 
 import com.example.crowdsensingwotandroidapp.utils.campaign.area.CampaignArea;
 import com.example.crowdsensingwotandroidapp.utils.campaign.area.CampaignCircleArea;
+import com.example.crowdsensingwotandroidapp.utils.campaign.schema.DataSchema;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -21,6 +22,9 @@ public class Campaign implements Serializable {
 	private final Number submissionRequired;
 	private final String type;
 	private final CampaignArea area;
+	// Schema opzionale dei dati da inviare (campo data_schema): permette di
+	// definire nuovi tipi di dato condivisibili senza modificare l'app.
+	private final DataSchema dataSchema;
 
 	public Campaign(HashMap campaign) {
 		id = (String) campaign.get("_id");
@@ -46,6 +50,8 @@ public class Campaign implements Serializable {
 		} else {
 			area = null;
 		}
+		Object schemaMap = campaign.get("data_schema");
+		dataSchema = schemaMap instanceof HashMap ? DataSchema.fromMap((HashMap) schemaMap) : null;
 	}
 
 	public Campaign(Campaign campaign){
@@ -61,6 +67,7 @@ public class Campaign implements Serializable {
 		this.submissionRequired = campaign.submissionRequired;
 		this.type = campaign.type;
 		this.area = campaign.area;
+		this.dataSchema = campaign.dataSchema;
 	}
 
 	public String getId() {
@@ -109,5 +116,9 @@ public class Campaign implements Serializable {
 
 	public CampaignArea getArea() {
 		return area;
+	}
+
+	public DataSchema getDataSchema() {
+		return dataSchema;
 	}
 }

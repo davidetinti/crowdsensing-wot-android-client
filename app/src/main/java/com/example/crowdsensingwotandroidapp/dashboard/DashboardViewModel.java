@@ -6,8 +6,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,7 +22,7 @@ import com.example.crowdsensingwotandroidapp.utils.User;
 import com.example.crowdsensingwotandroidapp.utils.campaign.AppliedCampaign;
 import com.example.crowdsensingwotandroidapp.utils.campaign.Campaign;
 import com.example.crowdsensingwotandroidapp.utils.campaign.SubmissionMode;
-import com.example.crowdsensingwotandroidapp.utils.campaign.submission.DataSubmission;
+import com.example.crowdsensingwotandroidapp.utils.sensors.SensorRegistry;
 import com.example.crowdsensingwotandroidapp.utils.network.NetworkStateManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,8 +56,8 @@ public class DashboardViewModel extends AndroidViewModel {
 	private final MutableLiveData<ArrayList<AppliedCampaign>> userCampaigns = new MutableLiveData<>(new ArrayList<>());
 	// Campaign currently selected for data submission under user tab
 	private final MutableLiveData<AppliedCampaign> userSelectedCampaign = new MutableLiveData<>(null);
-	// Data to be submitted manual
-	private final MutableLiveData<DataSubmission> manualData = new MutableLiveData<>(null);
+	// Data to be submitted manual (DataSubmission or Map payload)
+	private final MutableLiveData<Object> manualData = new MutableLiveData<>(null);
 	// Response from a manual data submission
 	private final MutableLiveData<Integer> manualDataSubmission = new MutableLiveData<>(null);
 	// Points earned from a completed campaign
@@ -120,7 +118,7 @@ public class DashboardViewModel extends AndroidViewModel {
 		return userSelectedCampaign;
 	}
 
-	public MutableLiveData<DataSubmission> getManualData() {
+	public MutableLiveData<Object> getManualData() {
 		return manualData;
 	}
 
@@ -300,21 +298,21 @@ public class DashboardViewModel extends AndroidViewModel {
 		return result;
 	}
 
-	public boolean verifyDeviceCapability(String type) {
-		SensorManager sensorManager = (SensorManager) getApplication().getSystemService(Context.SENSOR_SERVICE);
-		switch (type) {
-			case "temperature":
-				return sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null;
-			case "location":
-			default:
-				return true;
-		}
+	/**
+	 * Una campagna è utilizzabile se il dispositivo ha un sensore per il suo
+	 * tipo, oppure se definisce un data_schema compilabile manualmente.
+	 */
+	public boolean verifyDeviceCapability(Campaign campaign) {
+		if (SensorRegistry.sensorForType(getApplication().getApplicationContext(), campaign.getType()) != null)
+			return true;
+		return campaign.getDataSchema() != null && Boolean.TRUE.equals(campaign.getPushInputEnabled());
 	}
 
 	public boolean verifyPermission(String type) {
 		ArrayList<String> permissions = new ArrayList<>();
 		switch (type) {
 			case "location":
+			case "gps":
 				permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
 				permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
 				break;
@@ -414,7 +412,7 @@ public class DashboardViewModel extends AndroidViewModel {
 	public void sendDataManual() {
 		String bearer = MainViewModel.getBearerToken().getValue();
 		Campaign campaign = userSelectedCampaign.getValue();
-		DataSubmission data = manualData.getValue();
+		Object data = manualData.getValue();
 		if (campaign != null) {
 			MainViewModel.addLoading();
 			ServientService.getInstance(getApplication().getApplicationContext())

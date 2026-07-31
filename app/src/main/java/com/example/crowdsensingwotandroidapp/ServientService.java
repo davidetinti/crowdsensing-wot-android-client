@@ -24,7 +24,7 @@ import androidx.preference.PreferenceManager;
 import com.example.crowdsensingwotandroidapp.utils.User;
 import com.example.crowdsensingwotandroidapp.utils.campaign.Campaign;
 import com.example.crowdsensingwotandroidapp.utils.campaign.SubmissionMode;
-import com.example.crowdsensingwotandroidapp.utils.campaign.submission.DataSubmission;
+import com.example.crowdsensingwotandroidapp.utils.sensors.SensorRegistry;
 import com.example.crowdsensingwotandroidapp.utils.network.NetworkStateManager;
 import com.example.wot_servient.wot.DefaultWot;
 import com.example.wot_servient.wot.Wot;
@@ -34,11 +34,6 @@ import com.example.wot_servient.wot.thing.ExposedThing;
 import com.example.wot_servient.wot.thing.Thing;
 import com.example.wot_servient.wot.thing.ThingBuilder;
 import com.example.wot_servient.wot.thing.property.ThingPropertyBuilder;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.android.gms.location.CurrentLocationRequest;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
@@ -66,8 +61,8 @@ public class ServientService extends Service {
 	private static ServientService instance;
 	// Needed to extract values, strings, settings, parameters
 	private static Resources resources;
-	// Used to manage location
-	private static FusedLocationProviderClient fusedLocationClient;
+	// Application context used to read sensors for pull campaigns
+	private static Context appContext;
 	// Shared preferences to store persistent data
 	private static SharedPreferences sharedPreferences;
 	// Directory URL
@@ -149,7 +144,7 @@ public class ServientService extends Service {
 		resources = context.getResources();
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 		directoryUrl = "http://vz5nc4zqbrgzpn13.myfritz.net:8081";
-		fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+		appContext = context.getApplicationContext();
 		timer = new Timer();
 		pingTask = null;
 	}
@@ -457,31 +452,12 @@ public class ServientService extends Service {
 			String propertyName = campaign.getId();
 			Supplier<CompletableFuture<Object>> supplier = null;
 			if (mode == SubmissionMode.AUTOMATIC) {
-				switch (campaign.getType()) {
-					case "location":
-						supplier = () -> {
-							CompletableFuture<Object> completableFuture = new CompletableFuture<>();
-							fusedLocationClient.getCurrentLocation(new CurrentLocationRequest.Builder().setMaxUpdateAgeMillis(0)
-																		   .build(), null)
-									.addOnSuccessListener(completableFuture::complete);
-							return completableFuture;
-						};
-						break;
-					case "gps":
-						supplier = () -> CompletableFuture.supplyAsync(() -> {
-							Map<String, Object> result = new HashMap<>();
-							String json = "";
-							try {
-								json = new ObjectMapper().writeValueAsString(result);
-							} catch (JsonProcessingException e) {
-								e.printStackTrace();
-							}
-							return json;
-						});
-						break;
-					default:
-						break;
-				}
+				// Il payload è prodotto dal sensore associato al tipo della
+				// campagna (posizione, batteria, barometro, ...): nuovi tipi
+				// di dato si aggiungono registrando un DeviceSensor.
+				String campaignType = campaign.getType();
+				supplier = () -> SensorRegistry.read(appContext, campaignType)
+						.thenApply(payload -> (Object) payload);
 			}
 			try {
 				exposedDevice.addProperty(propertyName, new ThingPropertyBuilder().setReadOnly(true)
@@ -495,7 +471,7 @@ public class ServientService extends Service {
 		});
 	}
 
-	public CompletableFuture<HashMap> sendManualData(String bearer, String campaignId, DataSubmission data) {
+	public CompletableFuture<HashMap> sendManualData(String bearer, String campaignId, Object data) {
 		return CompletableFuture.supplyAsync(() -> {
 			if (consumedDashboard == null)
 				throw new CompletionException(new Exception("Servient not available"));

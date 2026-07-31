@@ -121,10 +121,10 @@ campagne (vedi `docs/CUSTOM_DATA_TYPES.md` nel repository del proxy):
 4. **HTTP in chiaro.** Il backend è raggiungibile solo via `http://`, quindi
    App Transport Security è disabilitata nell'Info.plist (chiave
    `NSAllowsArbitraryLoads`). Da rimuovere se il backend passa a HTTPS.
-5. **Tipi di campagna.** Come su Android, solo le campagne di tipo
-   `location`/`gps` hanno un'implementazione reale del sensore; `camera` e
-   `temperature` sono mostrate ma non implementate (iOS non ha comunque un
-   sensore di temperatura ambientale).
+5. **Tipi di campagna.** I tipi con sensore implementato sono `location`,
+   `gps`, `battery`, `pressure` e `motion`; gli altri (es. `camera`,
+   `temperature`) sono utilizzabili solo in modalità manuale tramite
+   `data_schema`.
 6. **LA-MQTT.** Il binding location-aware MQTT sperimentale non è stato
    portato: anche su Android è disabilitato (commentato in
    `ServientService.generateConfig`).
