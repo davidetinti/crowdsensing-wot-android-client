@@ -80,6 +80,25 @@ dal sistema (lettura property e invocazione azioni via HTTP, esposizione
 property via MQTT, registrazione TD). Il comportamento osservabile dal
 backend è lo stesso.
 
+## Tipi di dato personalizzati
+
+Il sistema supporta la definizione di nuovi tipi di dato condivisibili dai
+device **senza modifiche alle app**, tramite il campo `data_schema` delle
+campagne (vedi `docs/CUSTOM_DATA_TYPES.md` nel repository del proxy):
+
+- se la campagna ha un `data_schema`, l'invio manuale mostra un **form
+  generato dinamicamente** dallo schema (numeri con unità e limiti, testo,
+  booleani, enum), con validazione locale e lato proxy;
+- per le modalità automatiche (pull e push automatico) il `type` della
+  campagna viene risolto dal **`SensorRegistry`**: oltre alla posizione
+  sono già supportati `battery` (livello batteria), `pressure` (barometro)
+  e `motion` (accelerometro);
+- per aggiungere un nuovo sensore basta implementare il protocollo
+  `DeviceSensor` (in `Services/SensorRegistry.swift`) e registrarlo nel
+  costruttore del registry;
+- le modalità proposte all'utente sono filtrate in base ai sensori
+  effettivamente presenti sul dispositivo (`Campaign.supportedModes`).
+
 ## Differenze e limitazioni note su iOS
 
 1. **Niente foreground service.** Su Android un servizio in foreground con

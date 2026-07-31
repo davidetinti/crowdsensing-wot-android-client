@@ -60,7 +60,7 @@ struct JoinCampaignFlowView: View {
                     .foregroundStyle(.secondary)
             }
             Section {
-                ForEach(campaign.availableModes) { mode in
+                ForEach(campaign.supportedModes) { mode in
                     Button {
                         selectedMode = mode
                         selectedInterval = nil
@@ -133,8 +133,8 @@ struct JoinCampaignFlowView: View {
             if selectedMode != .manual {
                 Section {
                     Label(
-                        "L'app userà la tua posizione per inviare i dati. Assicurati di aver concesso il permesso di localizzazione.",
-                        systemImage: "location.circle"
+                        "L'app leggerà automaticamente il sensore richiesto (\(campaign.typeLabel.lowercased())). Assicurati di aver concesso i permessi necessari.",
+                        systemImage: campaign.typeSystemImage
                     )
                     .font(.footnote)
                     .foregroundStyle(.secondary)

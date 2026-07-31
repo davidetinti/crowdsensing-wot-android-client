@@ -73,6 +73,9 @@ struct Campaign: Identifiable, Equatable {
     let submissionRequired: Int
     let type: String
     let area: CampaignCircleArea?
+    /// Schema opzionale dei dati da inviare (campo `data_schema`): permette
+    /// di definire nuovi tipi di dato condivisibili senza modificare l'app.
+    let dataSchema: DataSchema?
 
     init?(dictionary: [String: Any]) {
         guard let id = dictionary["_id"] as? String else { return nil }
@@ -92,6 +95,11 @@ struct Campaign: Identifiable, Equatable {
         } else {
             area = nil
         }
+        if let schemaDict = dictionary["data_schema"] as? [String: Any] {
+            dataSchema = DataSchema(dictionary: schemaDict)
+        } else {
+            dataSchema = nil
+        }
     }
 
     /// Modalità disponibili in base ai flag della campagna.
@@ -108,6 +116,9 @@ struct Campaign: Identifiable, Equatable {
         case "location", "gps": return "Posizione"
         case "temperature": return "Temperatura"
         case "camera": return "Fotocamera"
+        case "battery": return "Batteria"
+        case "pressure": return "Pressione"
+        case "motion": return "Movimento"
         default: return type.capitalized
         }
     }
@@ -117,6 +128,9 @@ struct Campaign: Identifiable, Equatable {
         case "location", "gps": return "location.fill"
         case "temperature": return "thermometer.medium"
         case "camera": return "camera.fill"
+        case "battery": return "battery.75"
+        case "pressure": return "barometer"
+        case "motion": return "gyroscope"
         default: return "dot.radiowaves.left.and.right"
         }
     }

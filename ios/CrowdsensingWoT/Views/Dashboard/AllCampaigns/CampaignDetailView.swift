@@ -56,9 +56,14 @@ struct CampaignDetailView: View {
                     } else if isJoined {
                         Label("Hai già aderito a questa campagna", systemImage: "checkmark.circle")
                             .foregroundStyle(.teal)
-                    } else if campaign.availableModes.isEmpty {
-                        Label("Nessuna modalità di invio disponibile", systemImage: "xmark.circle")
-                            .foregroundStyle(.secondary)
+                    } else if campaign.supportedModes.isEmpty {
+                        Label(
+                            campaign.availableModes.isEmpty
+                                ? "Nessuna modalità di invio disponibile"
+                                : "Il tuo dispositivo non ha i sensori richiesti da questa campagna",
+                            systemImage: "xmark.circle"
+                        )
+                        .foregroundStyle(.secondary)
                     } else {
                         Button {
                             showJoinFlow = true

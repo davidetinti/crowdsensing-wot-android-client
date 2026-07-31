@@ -154,21 +154,13 @@ actor ServientService {
     }
 
     /// Aggiunge la property con il supplier del sensore richiesto dal tipo
-    /// di campagna (equivalente di `exposeForCampaign`).
+    /// di campagna (equivalente di `exposeForCampaign`). Il sensore è
+    /// risolto dal SensorRegistry, così nuovi tipi di dato si aggiungono
+    /// registrando un nuovo DeviceSensor.
     private func addPullProperty(to device: ExposedDeviceThing, for campaign: Campaign) {
-        let supplier: PropertyValueSupplier?
-        switch campaign.type {
-        case "location":
-            supplier = {
-                guard let location = try? await LocationProvider.shared.currentLocation() else {
-                    return nil
-                }
-                return LocationProvider.payload(for: location)
-            }
-        case "gps":
-            supplier = { [String: Any]() }
-        default:
-            supplier = { nil }
+        let campaignType = campaign.type
+        let supplier: PropertyValueSupplier = {
+            await SensorRegistry.shared.read(campaignType: campaignType)
         }
         device.addProperty(name: campaign.id, type: "object", supplier: supplier)
     }

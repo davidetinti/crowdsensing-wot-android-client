@@ -188,22 +188,29 @@ final class AppViewModel: ObservableObject {
 
     // MARK: Invio dati push
 
-    /// Invio manuale della posizione corrente. Ritorna gli invii rimanenti,
-    /// o nil in caso di errore.
+    /// Invio manuale del valore letto dal sensore associato al tipo della
+    /// campagna. Ritorna gli invii rimanenti, o nil in caso di errore.
     func sendManualData(for applied: AppliedCampaign) async -> Int? {
         addLoading()
         defer { removeLoading() }
-        do {
-            let location = try await LocationProvider.shared.currentLocation()
-            let payload: [String: Any] = [
-                "latitude": location.coordinate.latitude,
-                "longitude": location.coordinate.longitude,
-            ]
-            return await submitPushData(campaign: applied.campaign, payload: payload)
-        } catch {
-            show(error)
+        guard let payload = await SensorRegistry.shared.read(campaignType: applied.campaign.type) else {
+            errorMessage = "Nessun sensore disponibile per questa campagna"
             return nil
         }
+        return await submitPushData(campaign: applied.campaign, payload: payload)
+    }
+
+    /// Invio manuale di valori compilati dall'utente tramite il form
+    /// generato dal `data_schema` della campagna.
+    func sendManualData(for applied: AppliedCampaign, values: [String: Any]) async -> Int? {
+        if let schema = applied.campaign.dataSchema,
+           let validationError = schema.validate(values) {
+            errorMessage = validationError
+            return nil
+        }
+        addLoading()
+        defer { removeLoading() }
+        return await submitPushData(campaign: applied.campaign, payload: values)
     }
 
     /// Invio effettivo con gestione del completamento della campagna.
@@ -250,11 +257,11 @@ final class AppViewModel: ObservableObject {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: UInt64(interval) * 1_000_000_000)
                 guard !Task.isCancelled, let self else { return }
-                guard let location = try? await LocationProvider.shared.currentLocation() else { continue }
-                let payload: [String: Any] = [
-                    "latitude": location.coordinate.latitude,
-                    "longitude": location.coordinate.longitude,
-                ]
+                // Il payload è prodotto dal sensore associato al tipo della
+                // campagna (posizione, batteria, barometro, ...).
+                guard let payload = await SensorRegistry.shared.read(
+                    campaignType: applied.campaign.type
+                ) else { continue }
                 let remaining = await self.submitPushData(campaign: applied.campaign, payload: payload)
                 if remaining == 0 { return }
             }

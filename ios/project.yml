@@ -33,6 +33,9 @@ targets:
         NSLocationAlwaysAndWhenInUseUsageDescription: >-
           L'accesso continuo alla posizione permette di inviare i dati delle
           campagne anche quando l'app è in background.
+        NSMotionUsageDescription: >-
+          I dati di movimento e pressione servono per partecipare alle
+          campagne basate su barometro e accelerometro.
         UIBackgroundModes:
           - location
         # Il backend della tesi è raggiungibile solo in HTTP (nessun TLS),

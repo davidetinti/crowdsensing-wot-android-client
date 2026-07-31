@@ -12,6 +12,7 @@ struct JoinedCampaignDetailView: View {
     @State private var remainingSubmissions: Int?
     @State private var showLeaveConfirmation = false
     @State private var showSendSuccess = false
+    @State private var showSchemaForm = false
 
     var body: some View {
         NavigationStack {
@@ -41,16 +42,31 @@ struct JoinedCampaignDetailView: View {
 
                 if applied.mode == .manual {
                     Section {
-                        Button {
-                            sendManualData()
-                        } label: {
-                            Label("Invia la posizione adesso", systemImage: "paperplane.fill")
-                                .frame(maxWidth: .infinity)
+                        if applied.campaign.dataSchema != nil {
+                            Button {
+                                showSchemaForm = true
+                            } label: {
+                                Label("Compila e invia i dati", systemImage: "square.and.pencil")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .listRowBackground(Color.clear)
+                        } else {
+                            Button {
+                                sendManualData()
+                            } label: {
+                                Label("Invia i dati adesso", systemImage: "paperplane.fill")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .listRowBackground(Color.clear)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .listRowBackground(Color.clear)
                     } footer: {
-                        Text("Invia la tua posizione corrente come contributo alla campagna.")
+                        if applied.campaign.dataSchema != nil {
+                            Text("Compila il modulo con i dati richiesti dalla campagna.")
+                        } else {
+                            Text("Invia il valore corrente del sensore (\(applied.campaign.typeLabel.lowercased())) come contributo alla campagna.")
+                        }
                     }
                 }
 
@@ -84,6 +100,16 @@ struct JoinedCampaignDetailView: View {
                 }
                 Button("Annulla", role: .cancel) {}
             }
+            .sheet(isPresented: $showSchemaForm) {
+                if let schema = applied.campaign.dataSchema {
+                    SchemaFormView(
+                        campaignTitle: applied.campaign.title,
+                        schema: schema
+                    ) { values in
+                        sendSchemaData(values)
+                    }
+                }
+            }
             .alert("Dati inviati!", isPresented: $showSendSuccess) {
                 Button("OK", role: .cancel) {
                     if remainingSubmissions == 0 { dismiss() }
@@ -101,6 +127,15 @@ struct JoinedCampaignDetailView: View {
     private func sendManualData() {
         Task { @MainActor in
             if let remaining = await viewModel.sendManualData(for: applied) {
+                remainingSubmissions = remaining
+                showSendSuccess = true
+            }
+        }
+    }
+
+    private func sendSchemaData(_ values: [String: Any]) {
+        Task { @MainActor in
+            if let remaining = await viewModel.sendManualData(for: applied, values: values) {
                 remainingSubmissions = remaining
                 showSendSuccess = true
             }
