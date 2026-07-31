@@ -101,11 +101,18 @@ struct SchemaFormView: View {
 
     private func rangePlaceholder(for field: DataSchema.Field) -> String {
         switch (field.minimum, field.maximum) {
-        case let (minimum?, maximum?): return "Valore tra \(Int(minimum)) e \(Int(maximum))"
-        case let (minimum?, nil): return "Valore ≥ \(Int(minimum))"
-        case let (nil, maximum?): return "Valore ≤ \(Int(maximum))"
+        case let (minimum?, maximum?): return "Valore tra \(bound(minimum)) e \(bound(maximum))"
+        case let (minimum?, nil): return "Valore ≥ \(bound(minimum))"
+        case let (nil, maximum?): return "Valore ≤ \(bound(maximum))"
         default: return "Valore"
         }
+    }
+
+    private func bound(_ value: Double) -> String {
+        if value == value.rounded(), abs(value) < 1e15 {
+            return String(Int(value))
+        }
+        return String(value)
     }
 
     private func binding<V>(

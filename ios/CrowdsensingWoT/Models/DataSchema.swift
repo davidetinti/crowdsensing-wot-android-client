@@ -69,7 +69,7 @@ struct DataSchema: Equatable {
             }
             switch field.type {
             case .number, .integer:
-                guard let number = (value as? NSNumber)?.doubleValue else {
+                guard !(value is Bool), let number = (value as? NSNumber)?.doubleValue else {
                     return "Il campo \"\(field.label)\" deve essere un numero"
                 }
                 if field.type == .integer, number != number.rounded() {
@@ -90,15 +90,29 @@ struct DataSchema: Equatable {
                     return "Il campo \"\(field.label)\" deve essere vero o falso"
                 }
             }
-            if let allowed = field.allowedValues,
-               !allowed.contains(String(describing: value!)) {
+            if let allowed = field.allowedValues, !matchesAllowed(value!, allowed: allowed) {
                 return "Il campo \"\(field.label)\" deve essere uno tra: \(allowed.joined(separator: ", "))"
             }
         }
         return nil
     }
 
+    /// Confronto con i valori ammessi tollerante ai numeri: "1" (dallo
+    /// schema) deve corrispondere sia a 1 sia a 1.0 nel payload.
+    private func matchesAllowed(_ value: Any, allowed: [String]) -> Bool {
+        allowed.contains { allowedString in
+            if !(value is Bool), let number = value as? NSNumber,
+               let allowedNumber = Double(allowedString) {
+                return number.doubleValue == allowedNumber
+            }
+            return allowedString == String(describing: value)
+        }
+    }
+
     private func formatted(_ value: Double) -> String {
-        value == value.rounded() ? String(Int(value)) : String(value)
+        if value == value.rounded(), abs(value) < 1e15 {
+            return String(Int(value))
+        }
+        return String(value)
     }
 }

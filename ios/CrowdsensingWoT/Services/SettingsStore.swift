@@ -102,14 +102,16 @@ final class SettingsStore {
 
     /// Le adesioni sono salvate per-utente (chiave = bearer), come le
     /// SharedPreferences per-bearer dell'app Android:
-    /// [campaignId: ["mode": Int, "interval": Int?]]
-    func joinedCampaigns(bearer: String) -> [String: [String: Int]] {
-        defaults.dictionary(forKey: Key.joinedCampaignsPrefix + bearer) as? [String: [String: Int]] ?? [:]
+    /// [campaignId: ["mode": Int, "interval": Int?, "type": String]]
+    /// Il tipo serve a ripristinare il supplier corretto delle campagne
+    /// pull al riavvio dell'app, quando l'elenco campagne non è ancora noto.
+    func joinedCampaigns(bearer: String) -> [String: [String: Any]] {
+        defaults.dictionary(forKey: Key.joinedCampaignsPrefix + bearer) as? [String: [String: Any]] ?? [:]
     }
 
-    func saveJoinedCampaign(bearer: String, campaignId: String, mode: SubmissionMode, interval: Int?) {
+    func saveJoinedCampaign(bearer: String, campaignId: String, mode: SubmissionMode, interval: Int?, type: String) {
         var joined = joinedCampaigns(bearer: bearer)
-        var entry: [String: Int] = ["mode": mode.rawValue]
+        var entry: [String: Any] = ["mode": mode.rawValue, "type": type]
         if let interval { entry["interval"] = interval }
         joined[campaignId] = entry
         defaults.set(joined, forKey: Key.joinedCampaignsPrefix + bearer)

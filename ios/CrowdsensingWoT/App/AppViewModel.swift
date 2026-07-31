@@ -128,17 +128,21 @@ final class AppViewModel: ObservableObject {
         let saved = settings.joinedCampaigns(bearer: bearer)
         if campaigns.isEmpty {
             // Al login le campagne non sono ancora note: per ripristinare le
-            // property pull basta un Campaign minimale con id e tipo location.
+            // property pull basta un Campaign minimale con id e il tipo
+            // persistito al momento dell'adesione.
             return saved.compactMap { id, entry in
-                guard let mode = SubmissionMode(rawValue: entry["mode"] ?? -1) else { return nil }
-                guard let campaign = Campaign(dictionary: ["_id": id, "type": "location"]) else { return nil }
-                return AppliedCampaign(campaign: campaign, mode: mode, interval: entry["interval"])
+                guard let modeRaw = entry["mode"] as? Int,
+                      let mode = SubmissionMode(rawValue: modeRaw) else { return nil }
+                let type = entry["type"] as? String ?? "location"
+                guard let campaign = Campaign(dictionary: ["_id": id, "type": type]) else { return nil }
+                return AppliedCampaign(campaign: campaign, mode: mode, interval: entry["interval"] as? Int)
             }
         }
         return campaigns.compactMap { campaign in
             guard let entry = saved[campaign.id],
-                  let mode = SubmissionMode(rawValue: entry["mode"] ?? -1) else { return nil }
-            return AppliedCampaign(campaign: campaign, mode: mode, interval: entry["interval"])
+                  let modeRaw = entry["mode"] as? Int,
+                  let mode = SubmissionMode(rawValue: modeRaw) else { return nil }
+            return AppliedCampaign(campaign: campaign, mode: mode, interval: entry["interval"] as? Int)
         }
     }
 
@@ -163,7 +167,8 @@ final class AppViewModel: ObservableObject {
                 bearer: bearer,
                 campaignId: campaign.id,
                 mode: mode,
-                interval: effectiveInterval
+                interval: effectiveInterval,
+                type: campaign.type
             )
             rebuildJoinedCampaigns()
             return true
